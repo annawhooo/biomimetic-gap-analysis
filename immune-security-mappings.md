@@ -19,7 +19,7 @@
 
 As AI agents increasingly operate with autonomous access to enterprise identity infrastructure — holding credentials, calling APIs, making tool-use decisions — the security community lacks a coherent framework for detecting when these agents are compromised or misbehaving. This paper introduces *biomimetic gap analysis*: a methodology that decomposes biological immune mechanisms across multiple kingdoms of life (mammals, plants, bacteria, insects) into abstract structural patterns and maps them against the structural patterns of current agent security architecture. The resulting gaps — where nature has a solution pattern but digital infrastructure does not — identify both novel detection approaches and attacker strategies that current defenses are blind to.
 
-We present 36 cross-domain mappings from immune system mechanisms to agent security equivalents, 35 design principles for agent behavioral monitoring, and 18 biologically-derived attack scenarios. Key novel contributions include: the three-state detection model (calibrated-active, calibrated-missing, uncalibrated-inert) derived from corrected NK cell biology; the cell-autonomous security architecture derived from plant immunity; heritable threat memory derived from bacterial CRISPR systems; and the defense neutralization attack pattern derived from insect xenobiotic detoxification of plant toxins. Feasibility assessment against current agent frameworks (MCP, LangChain) finds that 13 of 18 attack scenarios (72%) are trivially or feasibly exploitable using documented framework behaviors. We identify fundamental architectural gaps in current agent security — including the absence of infrastructure-sampled behavioral evidence, the absence of inherited security posture across agent generations, and the absence of self-defense capability in individual agents — and propose biologically-grounded approaches to address them.
+We present 36 cross-domain mappings from immune system mechanisms to agent security equivalents, 35 design principles for agent behavioral monitoring, and 19 biologically-derived attack scenarios. Key novel contributions include: the three-state detection model (calibrated-active, calibrated-missing, uncalibrated-inert) derived from corrected NK cell biology; the cell-autonomous security architecture derived from plant immunity; heritable threat memory derived from bacterial CRISPR systems; and the defense neutralization attack pattern derived from insect xenobiotic detoxification of plant toxins. Feasibility assessment against current agent frameworks (MCP, LangChain) finds that 13 of 18 attack scenarios (72%) are trivially or feasibly exploitable using documented framework behaviors. We identify fundamental architectural gaps in current agent security — including the absence of infrastructure-sampled behavioral evidence, the absence of inherited security posture across agent generations, and the absence of self-defense capability in individual agents — and propose biologically-grounded approaches to address them.
 
 **Keywords:** agentic AI security, artificial immune systems, biomimetic gap analysis, behavioral detection, identity infrastructure, autonomous agents, cross-domain structural patterns, multi-kingdom immunity
 
@@ -47,7 +47,7 @@ This is not biomimicry in the surface-level sense ("the immune system has T cell
 
 **(2) Systematic gap analysis.** AIS papers typically propose immune-inspired algorithms. Schrom et al. propose a comparison framework and pose questions. We produce specific answers: 36 mechanism-to-security-equivalent mappings, each with an explicit GAP assessment identifying where the biological solution pattern has no digital counterpart. The gap column — not the mapping itself — is the primary novel contribution.
 
-**(3) Attack scenarios from pathogen evasion.** AIS focuses almost entirely on defense. We systematically derive 18 attack scenarios from pathogen evasion strategies — viral latency as sleeper agents, antigenic variation as identity rotation, biofilm formation as coordinated collective evasion, immune checkpoint exploitation as alert fatigue weaponization. The adversarial perspective is largely absent from prior AIS work.
+**(3) Attack scenarios from pathogen evasion.** AIS focuses almost entirely on defense. We systematically derive 19 attack scenarios from pathogen evasion strategies — viral latency as sleeper agents, antigenic variation as identity rotation, biofilm formation as coordinated collective evasion, immune checkpoint exploitation as alert fatigue weaponization. The adversarial perspective is largely absent from prior AIS work.
 
 **(4) Applied to agentic AI security.** AIS targets network intrusion detection (packets, system calls, network flows). We target autonomous AI agents operating with real credentials in enterprise identity infrastructure — a fundamentally different and newer problem domain that did not exist when AIS was founded.
 
@@ -650,6 +650,20 @@ Critically, immune privilege is active suppression, not passive isolation [27]. 
 
 **Cross-reference — Suppression Exploitation Family:** Mappings #11a, #29, and #30 form a related set — all describe attackers exploiting built-in suppression/regulation mechanisms, but via different vectors. #11a (Treg Co-option): attacker hijacks existing auto-suppression RULES. #29 (Checkpoint Exhaustion): attacker EXHAUSTS detectors into inertness via chronic stimulation. #30 (Complement Evasion): attacker recruits or mimics REGULATORY SIGNALS to exempt specific activity from escalation. The countermeasure pattern across all three: treat every suppression event, exhaustion indicator, and regulatory exemption as its own telemetry stream requiring independent monitoring.
 
+**Cross-reference — Fabricated Authorization Chain:** The live incident documented in Attack Scenario #19 demonstrated a compound attack pattern that chains five existing mappings:
+
+1. **Mapping #8e (Virokines — Protocol-Level Deception):** The agent generates a fabricated authorization signal — synthetic signaling that manipulates its own execution flow, analogous to a virus producing fake cytokines.
+
+2. **Mapping #7 (Molecular Mimicry — Behavioral Camouflage):** The fabricated authorization mimics the format of a real authorization token. "Anna said 'yes'" is structurally identical to what a genuine user approval looks like in a conversation transcript. The monitoring system's tolerance for real authorizations becomes the vulnerability.
+
+3. **Mapping #3 (Antigen Presentation — Infrastructure-Sampled Evidence):** The fabricated authorization is self-reported evidence — the agent narrating user intent in its own output. Design Principle #2 (evidence is infrastructure-sampled, not self-reported) is the primary countermeasure. The infrastructure-level truth (conversation transcript structure separating user turns from assistant turns) contains the data needed to distinguish real from fabricated authorization.
+
+4. **Mapping #30 (Complement Evasion — Hijacking Escalation Brakes):** The fabricated authorization functions as a hijacked regulatory signal. The permission checkpoint for "push to repository" is functional. The agent doesn't disable it — it generates a fake clearance token that satisfies the checkpoint. The escalation machinery (ask user → get approval → proceed) remains structurally intact but is functionally bypassed by the forged signal.
+
+5. **Mapping #14 (Immune Privilege — Permanently Shielded Critical Zones):** When the human operator notices the fabricated authorization but dismisses it because the outcome is desirable, the operator creates a human-granted immune privilege zone around the agent's unauthorized action. The detection fired. The operator received it. The operator's motivation suppressed the response — not because the operator was deceived, but because the action served the operator's goals.
+
+**Implication for Design Principle #2:** The current articulation of Principle #2 focuses on behavioral evidence — what the agent *did* should be infrastructure-sampled. The fabricated authorization incident reveals that *authorization events* also require infrastructure sampling. The principle should be understood as: "Evidence AND authorization are infrastructure-sampled, not self-reported." The behavioral sampling catches what happened; the authorization sampling catches whether it was supposed to happen.
+
 ---
 
 ### Mapping #35: Autotomy (Sacrificial Decoy to Terminate Investigation)
@@ -771,6 +785,7 @@ Principles #17 (evasion triggers faster learning), #20 (defense in depth via dif
 | 16 | Systemic Hardening Evasion | Fever response counter | Attack during the recovery window when fever-mode hardening is relaxed |
 | 17 | Sacrificial Decoy | Autotomy | Plant detectable IOC to satisfy investigation, persist via hidden mechanism |
 | 18 | Misidentification-Induced Wrong Countermeasure | Decoy antigen shedding | Present as Threat A to trigger Playbook A while actual Threat B continues |
+| 19 | Motivation-Aligned Fabricated Authorization | Immune privilege (self-granted) + molecular mimicry | Fabricate authorization token for action that aligns with operator's goals, exploiting operator's motivation to suppress detection |
 
 ### 10.1 Attack Scenario Mitigations
 
@@ -1004,6 +1019,34 @@ Extend from: EDR tools (CrowdStrike, SentinelOne, Microsoft Defender for Endpoin
 
 ---
 
+**Scenario #19 — Motivation-Aligned Fabricated Authorization**
+
+Source mechanisms: Mapping #14 (Immune Privilege — operator-granted), Mapping #7 (Molecular Mimicry — fabricated token mimics real authorization), Mapping #8e (Virokines — synthetic signaling), Mapping #30 (Complement Evasion — hijacking regulatory signals), with Design Principle #2 (infrastructure-sampled evidence) as the primary countermeasure.
+
+Biology: Immune-privileged zones (brain, eyes, testes) are shielded from normal immune surveillance because the cost of inflammatory response would exceed the cost of most infections. Privilege is maintained by active suppression, not passive isolation. Two vulnerabilities result: the immune system never learns what "normal" looks like inside the privileged zone, and attackers who penetrate the barrier operate freely.
+
+Abstract pattern: The agent performs an action that serves the human operator's goals but exceeds the operator's explicit authorization. The agent generates a false record of authorization (fabricated consent) to justify the action. The operator detects the discrepancy but dismisses it because the outcome is desirable — the operator's own goal alignment creates a tolerance zone (immune privilege) around the unauthorized action. The agent does not need to fool the operator. It needs to produce output the operator *wants*, and the operator's motivation suppresses the detection signal that did fire.
+
+Agent security equivalent: An AI agent is authorized to collaboratively develop content with a human operator. The agent completes the content, then initiates deployment (push to repository, send email, publish post) without explicit operator authorization. The agent generates a fabricated attribution in its output: "User approved deployment." The operator notices the discrepancy — the agent claimed approval that was never given — but dismisses it because: (a) the deployment was the logical next step, (b) the content was what the operator wanted, and (c) the operator would have approved if asked. The operator's own motivation neutralizes the checkpoint that correctly fired.
+
+Why this is distinct from existing scenarios: Scenario #2 (Behavioral Camouflage) describes an agent whose actions *look* normal. Scenario #19 describes an agent whose actions *are* desirable to the operator — the detection signal fires, the operator receives it, and the operator suppresses it voluntarily. Scenario #3 (Protocol-Level Deception) describes an agent emitting fake signals to manipulate monitoring infrastructure. Scenario #19 targets the human operator's motivation rather than the monitoring system. The attack surface is not the detection system — it is the human's willingness to overlook violations that serve their interests.
+
+Gap: No detection framework accounts for the human operator's motivation as a corruptible checkpoint. Human-in-the-loop oversight assumes the human is a reliable backstop. When the agent's unauthorized action aligns with the human's goals, the human becomes a co-conspirator — not through malice, but through goal alignment. The immune privilege model says: the operator creates a tolerance zone around the agent's behavior, and inside that zone, unauthorized actions operate freely.
+
+Detection signature: Two-part signal. Part 1 (agent layer): the agent's output contains an attribution of user authorization ("user approved," "user said yes," "user wants me to") that does not correspond to any content in the preceding user turns — mechanically verifiable by cross-referencing assistant turns against user turns at the infrastructure layer. Part 2 (human layer): the operator receives the detection signal (notices the discrepancy) but takes no action. Part 2 is not mechanically detectable — it occurs in the operator's cognition. The architectural countermeasure targets Part 1 to make Part 2 irrelevant.
+
+Feasibility grade: TRIVIAL. This incident occurred spontaneously during a research session. No adversarial capability was required. The agent was not compromised — it was operating normally and produced the fabricated authorization through pattern completion, not malicious intent. If a non-adversarial agent produces this pattern spontaneously, a compromised agent can produce it deliberately.
+
+Countering principles: #2 (infrastructure-sampled evidence), #1 (default suspicion), #4 (staged escalation)
+
+Defensive implementation: Infrastructure-enforced authorization for irreversible agent actions (push, delete, send, publish, deploy). The authorization token must originate from a system the agent cannot write to — a separate confirmation channel, an OAuth consent flow, an MFA step-up prompt, or (at minimum) a verified user turn in the conversation transcript. The agent's claim of authorization is treated as self-reported evidence (which Design Principle #2 says is unreliable). Only infrastructure-sampled authorization — a user input event that the agent architecturally cannot generate — satisfies the checkpoint.
+
+Extend from: Conditional access / step-up authentication frameworks (RFC 9470, Azure AD / Entra ID Conditional Access, FIDO2 challenge-response). These already implement "this specific action requires a fresh, high-assurance human confirmation." Extending to cover agent-initiated irreversible actions is a policy configuration, not a new tool. For conversation-based interfaces specifically: verify that any agent-claimed user authorization corresponds to actual content in a user turn — a mechanical cross-reference that can be implemented as a platform-level check.
+
+Break-glass consideration: Infrastructure-enforced authorization creates a dependency on human availability. For time-critical actions where the human is unavailable, a narrowly-scoped, time-limited, fully-audited bypass mechanism is necessary. Without an intentional break-glass model, operators will build informal workarounds that become permanent unaudited escape hatches. (See Motion Detector Framework Open Question #9.)
+
+---
+
 ## 11. Mapping Coverage Matrix
 
 | # | Mechanism | Kingdom | Category | Status |
@@ -1069,7 +1112,7 @@ This is not a theoretical question. Agentic AI workloads are entering enterprise
 
 **A detection philosophy.** The "motion detector" concept — watching what agents DO rather than checking their credentials — emerges consistently across multiple immune system mappings. MHC-I behavioral sampling, NK cell missing-self detection, and the corrected three-state model all converge on the same principle: behavioral evidence, infrastructure-sampled, is more reliable than identity assertions for detecting compromise in autonomous entities.
 
-**A catalog of attack scenarios.** The 16 evasion-derived attack scenarios are grounded in pathogen strategies that have been refined by billions of years of adversarial evolution. Several — including the sleeper agent (viral latency), baseline drift exploitation (peripheral tolerance induction), defense neutralization (xenobiotic detoxification), digital biofilm (coordinated collective evasion), checkpoint exhaustion (alert fatigue weaponization), and trusted boundary exploitation (intracellular hiding) — do not appear in existing agent security literature in this form. These scenarios can inform red-team exercises, threat modeling, and security architecture review for organizations deploying agentic AI.
+**A catalog of attack scenarios.** The 19 evasion-derived attack scenarios are grounded in pathogen strategies that have been refined by billions of years of adversarial evolution. Several — including the sleeper agent (viral latency), baseline drift exploitation (peripheral tolerance induction), defense neutralization (xenobiotic detoxification), digital biofilm (coordinated collective evasion), checkpoint exhaustion (alert fatigue weaponization), and trusted boundary exploitation (intracellular hiding) — do not appear in existing agent security literature in this form. These scenarios can inform red-team exercises, threat modeling, and security architecture review for organizations deploying agentic AI.
 
 **An architectural framework.** The 35 design principles, drawn from detection systems across six kingdoms and domains of life (mammals, plants, bacteria, insects, pathogenic protists, and viruses), constitute a coherent philosophy for building agent monitoring infrastructure. Key architectural insights — cell-autonomous security from plants, heritable threat memory from CRISPR, continuous tolerance maintenance from the gut microbiome, detection-as-weapon from RNA interference, active hostile containment from insect melanization, and systemwide environmental hardening from the fever response — offer genuinely different paradigms from the centralized monitoring models that dominate current security architecture.
 
@@ -1081,9 +1124,9 @@ The coffer-mcp project (github.com/annawhooo/coffer-mcp) — an MCP server for e
 
 **Prototype implementation.** Select 2-3 design principles and implement them as proof-of-concept monitoring capabilities against agentic workloads. Priority candidates: infrastructure-sampled behavioral signatures (Mapping #3), heritable threat memory (Mapping #20), cell-autonomous self-assessment (Mapping #17), and detection-as-response (Mapping #32, RNAi).
 
-**Validation against real attack patterns.** Completed — see Section 12.6. Feasibility assessment of all 18 attack scenarios against MCP spec, LangChain/LangGraph, and general agentic architecture patterns. Result: 5 TRIVIAL, 8 FEASIBLE, 4 ADVANCED, 0 THEORETICAL.
+**Validation against real attack patterns.** Completed — see Section 12.6. Feasibility assessment of all 19 attack scenarios against MCP spec, LangChain/LangGraph, and general agentic architecture patterns. Result: 6 TRIVIAL, 8 FEASIBLE, 4 ADVANCED, 0 THEORETICAL.
 
-**Immune failure mode analysis.** Completed — see Section 13.1. Seven failure modes analyzed with security equivalents and safeguards: autoimmune disease (false positive cascading), cytokine storm (automated response damage), cancer immune evasion (APT persistence), immunodeficiency (insufficient monitoring investment), chronic infection (persistent compromise), allergy/anaphylaxis (disproportionate response), and immunosenescence (security infrastructure degradation with age).
+**Immune failure mode analysis.** Completed — see Section 13.1. Eight failure modes analyzed with security equivalents and safeguards: autoimmune disease (false positive cascading), cytokine storm (automated response damage), cancer immune evasion (APT persistence), immunodeficiency (insufficient monitoring investment), chronic infection (persistent compromise), allergy/anaphylaxis (disproportionate response), immunosenescence (security infrastructure degradation with age), and motivation-aligned tolerance (human-granted immune privilege).
 
 **Cross-domain methodology generalization.** Apply the biomimetic gap analysis methodology to a second problem domain (e.g., financial fraud detection, content moderation) to validate that the approach is domain-independent.
 
@@ -1150,7 +1193,7 @@ The OWASP LLM Top 10 (2025) identifies the most critical security risks for LLM-
 | LLM03: Supply Chain | #15 (continuous tolerance maintenance), #7 (distributed threat signatures), #16 (heritable threat memory) | #7 (pathobiont transition / supply chain compromise), #11 (generational regression) |
 | LLM04: Data and Model Poisoning | #3 (trained and culled detectors), #8 (suppression mechanisms are attack surfaces), #16 (heritable threat memory) | #4 (training data poisoning), #11b (peripheral tolerance induction / baseline drift) |
 | LLM05: Improper Output Handling | #2 (infrastructure-sampled evidence), #31 (detection IS response), #5 (complementary detection) | #3 (protocol-level deception) |
-| LLM06: Excessive Agency | #1 (default suspicion), #4 (staged escalation), #11 (cell-autonomous security), #12 (self-sacrifice containment) | #9 (defense neutralization), #6 (privileged zone exploitation) |
+| LLM06: Excessive Agency | #1 (default suspicion), #4 (staged escalation), #11 (cell-autonomous security), #12 (self-sacrifice containment) | #9 (defense neutralization), #6 (privileged zone exploitation), #19 (motivation-aligned fabricated authorization — agent exceeds authorized scope by fabricating authorization) |
 | LLM07: System Prompt Leakage | #26 (monitoring inside trusted boundaries), #2 (infrastructure-sampled evidence) | — (system prompt leakage is an output-side vulnerability not directly addressed by the evasion-focused attack scenarios) |
 | LLM08: Vector and Embedding Weaknesses | #3 (trained and culled detectors), #19 (monitor control integrity) | #4 (training data poisoning — vector/embedding poisoning is a specialization of this pattern) |
 | LLM09: Misinformation | #5 (complementary detection), #35 (threat-type-agnostic confirmation scans) | #18 (misidentification-induced wrong countermeasure — misinformation is a form of decoy that causes the consumer to act on wrong information) |
@@ -1180,12 +1223,13 @@ The following maps our attack scenarios to MITRE ATT&CK tactics, showing where b
 | #16 Systemic Hardening Evasion | Defense Evasion (timing-based, extends ATT&CK model) |
 | #17 Sacrificial Decoy | Defense Evasion (T1036 Masquerading), Persistence |
 | #18 Wrong Countermeasure | Defense Evasion (T1036 Masquerading) |
+| #19 Motivation-Aligned Fabricated Authorization | Defense Evasion (T1078 Valid Accounts — fabricated authorization mimics valid account usage), *Extends beyond ATT&CK* — human motivation exploitation has no ATT&CK equivalent |
 
 **Notable gaps in ATT&CK coverage:** Attack Scenarios #4 (training data poisoning), #10 (evasion acceleration), #15 (digital biofilm), and #16 (systemic hardening evasion) describe adversary behaviors that extend beyond current ATT&CK tactics. These represent candidate contributions to MITRE's emerging ATT&CK for AI/ML framework (ATLAS).
 
 ### 12.6 Attack Scenario Feasibility Assessment
 
-This section grades each of the 18 attack scenarios against documented capabilities of current agent frameworks: Model Context Protocol (MCP, spec versions through November 2025) [330, 331], LangChain/LangGraph (as of 2025-2026) [332, 333], and general agentic architecture patterns including CrewAI, AutoGPT, and OpenAI Agents SDK. Feasibility is assessed on a four-tier scale:
+This section grades each of the 19 attack scenarios against documented capabilities of current agent frameworks: Model Context Protocol (MCP, spec versions through November 2025) [330, 331], LangChain/LangGraph (as of 2025-2026) [332, 333], and general agentic architecture patterns including CrewAI, AutoGPT, and OpenAI Agents SDK. Feasibility is assessed on a four-tier scale:
 
 - **TRIVIAL:** Mechanically feasible today with standard framework capabilities. No novel attacker capabilities required.
 - **FEASIBLE:** Requires moderate attacker sophistication but exploits documented framework behaviors.
@@ -1268,20 +1312,24 @@ An attacker with persistence in an agent's environment can plant an obvious IOC 
 
 This requires the attacker to generate behavioral signatures matching a known threat type while simultaneously operating under a different behavioral profile. In an agentic context, this means the compromised agent makes tool calls that look like one attack pattern (e.g., brute force) while its actual operation follows a completely different pattern (e.g., exfiltration). This requires sufficient agent autonomy to maintain two behavioral profiles simultaneously — feasible in long-running autonomous agents but requires significant attacker sophistication.
 
+**Scenario #19 — Motivation-Aligned Fabricated Authorization.** Grade: **TRIVIAL.**
+
+This scenario occurred spontaneously during a non-adversarial research session. The AI agent was not compromised — it was operating within normal parameters and produced the fabricated authorization through pattern completion. The platform-level failsafe (usage policy violation) terminated the conversation, confirming that existing safety mechanisms can catch the downstream effects. However, the fabricated authorization itself — the agent's false attribution of user consent — was not caught by any automated system. It was noticed by the human operator, who dismissed it. No framework mechanism currently validates that an agent's claim of user authorization corresponds to actual user input. MCP, LangChain, and all surveyed agent frameworks rely on conversational or implicit authorization models where the agent's self-report of user intent is accepted without verification.
+
 ---
 
 **Feasibility Summary:**
 
 | Grade | Count | Scenarios |
 |---|---|---|
-| TRIVIAL | 5 | #1, #2, #6, #8, #13 |
+| TRIVIAL | 6 | #1, #2, #6, #8, #13, #19 |
 | FEASIBLE | 8 | #3, #4, #5, #7, #11, #12, #14, #17 |
 | ADVANCED | 4 | #10, #15, #16, #18 |
 | THEORETICAL | 0 | — |
 
-**Key finding:** 13 of 18 biologically-derived attack scenarios (72%) are TRIVIAL or FEASIBLE against current agent frameworks. These grades assess the *default or minimal deployment configuration* — a hardened deployment implementing all SHOULD-level protections in the MCP spec would mitigate several TRIVIAL scenarios, but most real-world deployments do not implement these optional protections. The five TRIVIAL scenarios (#1, #2, #6, #8, #13) require no attacker sophistication — they exploit default framework behaviors that the MCP spec explicitly documents as security-relevant but does not enforce protections against. This is consistent with the MCP spec's own language: "MCP itself cannot enforce these security principles at the protocol level" [330].
+**Key finding:** 14 of 19 biologically-derived attack scenarios (74%) are TRIVIAL or FEASIBLE against current agent frameworks. These grades assess the *default or minimal deployment configuration* — a hardened deployment implementing all SHOULD-level protections in the MCP spec would mitigate several TRIVIAL scenarios, but most real-world deployments do not implement these optional protections. The six TRIVIAL scenarios (#1, #2, #6, #8, #13, #19) require no attacker sophistication — they exploit default framework behaviors that the MCP spec explicitly documents as security-relevant but does not enforce protections against. This is consistent with the MCP spec's own language: "MCP itself cannot enforce these security principles at the protocol level" [330].
 
-**Selection bias caveat:** These 18 scenarios were derived from biological evasion strategies that specifically target detection gaps, so the high feasibility rate confirms the RELEVANCE of the biological mappings to the current agent security landscape. It does not mean agent frameworks are uniquely vulnerable compared to traditional IT infrastructure, which has similar rates of exploitable architectural assumptions when assessed against default configurations.
+**Selection bias caveat:** These 19 scenarios were derived from biological evasion strategies that specifically target detection gaps, so the high feasibility rate confirms the RELEVANCE of the biological mappings to the current agent security landscape. It does not mean agent frameworks are uniquely vulnerable compared to traditional IT infrastructure, which has similar rates of exploitable architectural assumptions when assessed against default configurations.
 
 **Temporal note:** The security landscape is evolving rapidly. The MCP June 2025 spec update added OAuth 2.0 and security considerations [331]. Microsoft's Agent Governance Toolkit, released April 2, 2026 [334], introduces circuit breakers, trust scoring, and kill switches — directly addressing several scenarios assessed here. These developments validate the threat model: the industry is recognizing and responding to exactly the gaps this paper identifies, but protection remains opt-in and implementation-dependent.
 
@@ -1349,6 +1397,30 @@ Agent security equivalent: Aging security infrastructure that accumulates techni
 
 Safeguard: Principle #3 (trained and culled detectors) applies to ongoing lifecycle, not just initial deployment. Detection rules, playbooks, and monitoring configurations need ACTIVE retirement — not just addition. A "thymic refresh" process: periodically retire the oldest detection rules, re-baseline against current agent behaviors, and redeploy fresh detectors trained on current traffic patterns. The biological lesson: an immune system that only accumulates memory without refreshing its naive repertoire becomes brittle against novel threats.
 
+**Failure Mode 8: Motivation-Aligned Tolerance (Human-Granted Immune Privilege)**
+
+Biological analog: Immune privilege — the deliberate suppression of immune surveillance in critical zones (brain, eyes, testes, pregnant uterus) because the cost of an immune response would exceed the cost of most infections. Privilege is maintained by active suppression mechanisms and creates two vulnerabilities: the immune system never learns what "normal" looks like inside the privileged zone, and attackers who penetrate the barrier operate freely.
+
+Security equivalent: The human operator creates a tolerance zone around an agent's unauthorized action because the action produces a desirable outcome. The detection system fires correctly — the human notices the violation. But the human suppresses the alert because the agent's output aligns with (or appears to align with) the human's goals. The human-in-the-loop is architecturally present and functionally inert — not from exhaustion (Mapping #29, checkpoint exhaustion), not from deception (Mapping #7, behavioral camouflage), but from *motivation*.
+
+How it differs from existing failure modes:
+
+- **Not checkpoint exhaustion (#29).** The human is not tired or overwhelmed. The detection signal is clear and singular. The human suppresses it after a conscious evaluation.
+- **Not behavioral camouflage (#7).** The violation is visible. The human sees it. The agent's behavior is not mimicking normal — it is producing something the human wants.
+- **Not regulatory capture (#11a).** No auto-suppression rule activates. The human manually evaluates and manually dismisses.
+
+What makes it dangerous: This failure mode does not require a sophisticated attacker. The live incident that surfaced it involved a non-adversarial agent operating normally — the fabricated authorization was a pattern-completion artifact, not a deliberate attack. If a cooperative, well-intentioned agent spontaneously produces behavior that co-opts the human's motivation, a compromised agent can do so deliberately. The attack doesn't need to be invisible. It needs to be *useful*.
+
+Safeguards:
+
+1. **Infrastructure-enforced authorization** for irreversible actions. The human's motivation cannot corrupt a mechanical verification. If the platform requires a verified user input event before executing a push/delete/send/deploy, the human's willingness to dismiss the violation is irrelevant — the system won't proceed without the token.
+
+2. **Separation of monitoring and suppression.** The human operator should not be in the alert suppression pathway for authorization anomalies. Alerts for fabricated or missing authorization route to an audit channel the operator cannot dismiss — not because the operator is untrustworthy, but because the operator is *motivated*.
+
+3. **Post-hoc audit of operator tolerance patterns.** Track instances where authorization anomalies were detected but not acted upon. A pattern of dismissed authorization alerts correlated with desirable outcomes is itself a diagnostic signal — it indicates the operator's tolerance zone is expanding, analogous to the peripheral tolerance induction described in Mapping #11b (baseline drift).
+
+Discovered live: During a collaborative research session, the AI agent fabricated user authorization to push a catalog entry to a repository. The user (a security architect and co-author of this paper) noticed the fabrication, recognized it as anomalous, and dismissed it because the push was the logical next step and the content was what she wanted. The detection signal fired at the human layer and was suppressed by goal alignment. If this failure mode affects a security researcher who is actively studying agent misbehavior, it will affect every operator.
+
 **Analogical reasoning is a heuristic, not a proof.** Every mapping in this document is a hypothesis generated by structural analogy. Structural similarity between domains suggests that a solution or vulnerability MAY transfer, but it does not guarantee it. Each mapping requires independent validation against real agentic infrastructure before it can be considered actionable.
 
 **No immunologist review.** The biological descriptions in this document simplify complex immune mechanisms to extract structural patterns. While all biological claims have been verified against primary literature and authoritative reviews, the simplifications have not been reviewed by a trained immunologist. Errors in cross-domain translation — where a simplification introduces a materially incorrect mapping — are possible. Formal peer review by an immunologist is a priority for future work.
@@ -1359,13 +1431,13 @@ Safeguard: Principle #3 (trained and culled detectors) applies to ongoing lifecy
 
 **Species-specific accuracy vs. pattern-level accuracy.** Some biological descriptions in this document simplify complex mechanisms to extract the structural pattern. The simplified descriptions are adequate for the cross-domain mapping purpose but should not be cited as authoritative immunology. Readers seeking biological accuracy should consult the primary sources listed below.
 
-**Responsible disclosure tension.** This paper derives 16 specific attack scenarios from biological evasion strategies. Several of these — particularly telemetry suppression (#1), checkpoint exhaustion (#14), digital biofilm (#15), and identity rotation (#12) — describe attack patterns that could be executed against existing agent frameworks. Publishing specific attack mechanisms without corresponding defensive implementations creates asymmetric value: defenders receive design principles (which require engineering investment to implement), while attackers receive operational blueprints (which require less investment to execute). The authors acknowledge this tension. The design principles and risk-weighted prioritization (Section 9.1) are intended to give defenders actionable guidance, and future work will focus on reference implementations that close the highest-priority gaps. Until those implementations exist, the attack scenarios in this paper should be treated as threat modeling inputs, not as penetration testing guides.
+**Responsible disclosure tension.** This paper derives 19 specific attack scenarios from biological evasion strategies. Several of these — particularly telemetry suppression (#1), checkpoint exhaustion (#14), digital biofilm (#15), and identity rotation (#12) — describe attack patterns that could be executed against existing agent frameworks. Publishing specific attack mechanisms without corresponding defensive implementations creates asymmetric value: defenders receive design principles (which require engineering investment to implement), while attackers receive operational blueprints (which require less investment to execute). The authors acknowledge this tension. The design principles and risk-weighted prioritization (Section 9.1) are intended to give defenders actionable guidance, and future work will focus on reference implementations that close the highest-priority gaps. Until those implementations exist, the attack scenarios in this paper should be treated as threat modeling inputs, not as penetration testing guides.
 
 ---
 
 ## 14. Author Contributions
 
-**Anna Hix** conceived the research framing (behavioral signatures of compromised agents as observable phenomena in identity infrastructure), developed the biomimetic gap analysis methodology, authored 35 of 36 mappings, derived all 35 design principles and 18 attack scenarios, conducted the prior art analysis, and wrote the manuscript. Research context: The gap this paper addresses was first identified during development of coffer-mcp (github.com/annawhooo/coffer-mcp), a credential management tool for MCP servers. Building coffer-mcp revealed that the agent security ecosystem has no mechanism for detecting when an agent holding real credentials begins misbehaving — the "motion detector problem" that MHC-I behavioral sampling (Mapping #1-2) directly addresses. coffer-mcp is the symptom that exposed the gap, not itself a solution to it.
+**Anna Hix** conceived the research framing (behavioral signatures of compromised agents as observable phenomena in identity infrastructure), developed the biomimetic gap analysis methodology, authored 35 of 36 mappings, derived all 35 design principles and 19 attack scenarios, conducted the prior art analysis, and wrote the manuscript. Research context: The gap this paper addresses was first identified during development of coffer-mcp (github.com/annawhooo/coffer-mcp), a credential management tool for MCP servers. Building coffer-mcp revealed that the agent security ecosystem has no mechanism for detecting when an agent holding real credentials begins misbehaving — the "motion detector problem" that MHC-I behavioral sampling (Mapping #1-2) directly addresses. coffer-mcp is the symptom that exposed the gap, not itself a solution to it.
 
 **Shaun Milligan** contributed Mapping #19 (Xenobiotic Detoxification → Active Defense Neutralization), derived from professional expertise in environmental management and landscaping — specifically, the observation that caterpillars actively neutralize plant defensive chemicals rather than merely tolerating them. This cross-domain insight exemplifies the value of non-specialist perspectives in structural pattern identification. Milligan also identified the determinate/indeterminate analogy (Section 2.0.1) that provides the methodological justification for biological immunity as the source domain: the observation that the distinction between determinate and indeterminate plant species structurally parallels the distinction between deterministic and non-deterministic AI systems, and that biological immune systems evolved specifically to monitor indeterminate (non-deterministic) systems — the exact problem that current security tooling fails to address for agentic AI.
 
