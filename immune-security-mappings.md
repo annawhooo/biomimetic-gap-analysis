@@ -19,7 +19,7 @@
 
 As AI agents increasingly operate with autonomous access to enterprise identity infrastructure — holding credentials, calling APIs, making tool-use decisions — the security community lacks a coherent framework for detecting when these agents are compromised or misbehaving. This paper introduces *biomimetic gap analysis*: a methodology that decomposes biological immune mechanisms across multiple kingdoms of life (mammals, plants, bacteria, insects) into abstract structural patterns and maps them against the structural patterns of current agent security architecture. The resulting gaps — where nature has a solution pattern but digital infrastructure does not — identify both novel detection approaches and attacker strategies that current defenses are blind to.
 
-We present 34 cross-domain mappings from immune system mechanisms to agent security equivalents, 33 design principles for agent behavioral monitoring, and 16 biologically-derived attack scenarios. Key novel contributions include: the three-state detection model (calibrated-active, calibrated-missing, uncalibrated-inert) derived from corrected NK cell biology; the cell-autonomous security architecture derived from plant immunity; heritable threat memory derived from bacterial CRISPR systems; and the defense neutralization attack pattern derived from insect xenobiotic detoxification of plant toxins. We identify fundamental architectural gaps in current agent security — including the absence of infrastructure-sampled behavioral evidence, the absence of inherited security posture across agent generations, and the absence of self-defense capability in individual agents — and propose biologically-grounded approaches to address them.
+We present 36 cross-domain mappings from immune system mechanisms to agent security equivalents, 35 design principles for agent behavioral monitoring, and 18 biologically-derived attack scenarios. Key novel contributions include: the three-state detection model (calibrated-active, calibrated-missing, uncalibrated-inert) derived from corrected NK cell biology; the cell-autonomous security architecture derived from plant immunity; heritable threat memory derived from bacterial CRISPR systems; and the defense neutralization attack pattern derived from insect xenobiotic detoxification of plant toxins. Feasibility assessment against current agent frameworks (MCP, LangChain) finds that 13 of 18 attack scenarios (72%) are trivially or feasibly exploitable using documented framework behaviors. We identify fundamental architectural gaps in current agent security — including the absence of infrastructure-sampled behavioral evidence, the absence of inherited security posture across agent generations, and the absence of self-defense capability in individual agents — and propose biologically-grounded approaches to address them.
 
 **Keywords:** agentic AI security, artificial immune systems, biomimetic gap analysis, behavioral detection, identity infrastructure, autonomous agents, cross-domain structural patterns, multi-kingdom immunity
 
@@ -31,25 +31,27 @@ This is not biomimicry in the surface-level sense ("the immune system has T cell
 
 ## 1.1 Related Work and Positioning
 
-**Artificial Immune Systems (AIS).** The application of immune system concepts to computer security is a mature field with a 40-year history. Farmer, Packard, and Perelson (1986) first suggested that computer science might borrow from the immune system [301]. Forrest, Perelson, Allen, and Cherukuri (1994) formalized this with their landmark paper "Self-Nonself Discrimination in a Computer," introducing the Negative Selection Algorithm [302]. Subsequent work produced the Clonal Selection Algorithm (de Castro & Von Zuben, 2002) [303], the Dendritic Cell Algorithm (Greensmith, Aickelin & Cayzer, 2005) [304], and the comprehensive textbook *Artificial Immune Systems: A New Computational Intelligence Approach* (de Castro & Timmis, 2002) [305]. AIS remains active, with recent work applying immune-inspired algorithms to IoT intrusion detection [306], industrial control systems [307], and semi-supervised learning for network security [308].
+**Artificial Immune Systems (AIS).** The application of immune system concepts to computer security is a mature field with a 40-year history. Farmer, Packard, and Perelson (1986) first suggested that computer science might borrow from the immune system [301]. Forrest, Perelson, Allen, and Cherukuri (1994) formalized this with their landmark paper "Self-Nonself Discrimination in a Computer," introducing the Negative Selection Algorithm [302]. Subsequent work produced the Clonal Selection Algorithm (de Castro & Von Zuben, 2002) [303], the Dendritic Cell Algorithm (Greensmith, Aickelin & Cayzer, 2005) [304], and the comprehensive textbook *Artificial Immune Systems: A New Computational Intelligence Approach* (de Castro & Timmis, 2002) [305]. AIS remains active, with recent work applying immune-inspired algorithms to IoT intrusion detection [306], industrial control systems [307], and semi-supervised learning for network security [308]. Widulinski (2023) provides a recent overview of AIS in intrusion detection, confirming that the field remains primarily focused on negative selection and clonal selection algorithms [335]. In the commercial space, Darktrace's "Enterprise Immune System" product applies immune metaphors to network anomaly detection at enterprise scale, learning "patterns of life" for organizational IT environments and flagging deviations [336].
 
 **Schrom et al. (2023).** The most directly relevant prior work is "Challenges in cybersecurity: Lessons from biological defense systems" (Schrom, Kinzig, Forrest, Graham, Levin, Bergstrom, et al., *Mathematical Biosciences*, 2023) [309]. This paper, authored by leading researchers in computational immunology (Forrest, Perelson), complex systems (Levin, Bergstrom), and cybersecurity (Halderman, Doupé, Rexford), presents a conceptual framework for structured comparisons between biological immunity and cybersecurity. It organizes defense mechanisms into five strategic layers, discusses the context of defense, and poses open research questions. Critically, Schrom et al. note that cloud-based computing containers — which "can interact, reproduce, and be destroyed, just like biological immune cells" — suggest that immune system principles should be revisited in light of modern computing architectures. They also observe that simpler immune systems (corals, bacteria) achieve multiple defensive layers, suggesting value in looking beyond vertebrate immunity.
 
-**Emerging agentic AI security frameworks.** The application domain this paper targets — securing autonomous AI agents — is the subject of a growing body of work that approaches the problem without biological analogy. Neelou et al. (2025) introduce A2AS, a runtime security layer for AI agents that enforces certified behavior, authenticated prompts, security boundaries, in-context defenses, and codified policies [310]. Evani (2025) presents a control framework addressing adversarial propagation risks, multi-agent collusion, decision cascade exploits, and emergent behavior suppression in agentic AI systems [311]. Tutuncuoglu (2025) describes SentinelMind, a self-learning autonomous cybersecurity framework that draws loosely on biological immune systems and agent-based cognition for threat anticipation [312]. These frameworks address the same problem domain as this paper but derive their architectures from engineering first principles rather than cross-domain biological analogy. Our work is complementary: the gap analysis and design principles presented here could inform the architectural evolution of frameworks like A2AS and Evani by identifying blind spots that engineering-first approaches may not surface.
+**Concurrent immune-inspired cybersecurity work (2024-2026).** Two works published during or after our research period are particularly relevant. The Stratosphere Laboratory (Czech Technical University in Prague, February 2026) presents "Rethinking the Principles of Immunity For a Cybersecurity Immune System," identifying sixteen high-level principles from biological immunity and translating them into cybersecurity defense concepts [337]. Their work shares our approach of extracting principles rather than building algorithms, and covers overlapping biological mechanisms (MHC self-recognition, immune memory, graduated response, innate/adaptive coordination). Key differences: the Stratosphere Lab work focuses exclusively on defense-side mechanisms and targets traditional cybersecurity (network/host security), while our work includes 12 evasion-side mappings, derives attack scenarios from pathogen strategies, and targets the specific problem domain of autonomous AI agents. Separately, the I3AI framework (2025) proposes an immune-inspired AI architecture for IoT/edge security using federated learning, self-organization, and immune memory [338]. I3AI implements algorithms for distributed edge environments, whereas our work produces structural gap analysis for enterprise agent security. Olivares et al. (2024) apply biomimetic optimization algorithms (Particle Swarm, Bat Algorithm, Grey Wolf Optimizer) to SOC efficiency, using bio-inspired optimization techniques rather than structural pattern transfer from immunology [339].
+
+**Emerging agentic AI security frameworks.** The application domain this paper targets — securing autonomous AI agents — is the subject of a rapidly growing body of work. Neelou et al. (2025) introduce A2AS, a runtime security layer for AI agents that enforces certified behavior, authenticated prompts, security boundaries, in-context defenses, and codified policies [310]. Evani (2025) presents a control framework addressing adversarial propagation risks, multi-agent collusion, decision cascade exploits, and emergent behavior suppression in agentic AI systems [311]. Tutuncuoglu (2025) describes SentinelMind, a self-learning autonomous cybersecurity framework that draws loosely on biological immune systems and agent-based cognition for threat anticipation [312]. Chhabra et al. (October 2025, arXiv:2510.23883) provide a comprehensive survey of agentic AI security covering threats, defenses, and evaluation across web, software, and physical environments [340]. The Attack and Defense Landscape survey (March 2026, arXiv:2603.11088) presents a unified risk taxonomy for agentic AI, noting that prior "design-oriented work proposes high-level principles without systematizing attacks or defenses" — a gap our work explicitly addresses with paired attack scenarios and mitigations [341]. The OWASP Foundation published the Top 10 for Agentic Applications in December 2025, providing the first formal industry taxonomy of agent-specific risks including goal hijacking, tool misuse, identity abuse, and memory poisoning [342]. These frameworks address the same problem domain as this paper but derive their architectures from engineering first principles rather than cross-domain biological analogy. Our work is complementary: the gap analysis and design principles presented here could inform the architectural evolution of these frameworks by identifying blind spots that engineering-first approaches may not surface.
 
 **Adversarial co-evolution and multi-agent threats.** Tallam (2025) argues in "The Cyber Immune System" that adversarial forces — whether biological parasites or digital exploiters — should be reframed as essential stress-testers of complex systems, drawing on epidemiology and cybersecurity to examine how systems evolve through persistent threats [313]. This philosophical framing aligns with our Section 8 (evasion strategies), where pathogen evasion mechanisms inform attacker playbooks, though Tallam does not produce specific mappings or gap analysis. Separately, a growing body of work on multi-agent security independently identifies threat patterns that our biological analogies also surface: coordinated attacks that appear innocuous when viewed individually, steganographic communication between agents, and cascade-based threats that propagate across cooperative agent populations [314]. These overlap directly with our biofilm (#33), complement cascade (#8), and interferon (#23) mappings — providing independent engineering-side validation that the biological patterns transfer to real threat models.
 
-**How this paper differs from prior work.** Our work builds on the AIS tradition and responds directly to the research agenda Schrom et al. propose, but differs in five specific ways:
+**How this paper differs from prior work.** Our work builds on the AIS tradition, responds directly to the research agenda Schrom et al. propose, and complements the concurrent defense-side principles identified by Garcia et al. [337]. It differs in five specific ways:
 
 **(1) Multi-kingdom scope.** AIS draws almost exclusively on mammalian adaptive immunity — primarily negative selection, clonal selection, and danger theory. Schrom et al. mention corals and bacteria in passing but do not systematically map their mechanisms. We draw on six kingdoms/domains (mammals, plants, bacteria, insects, pathogenic protists, viruses), producing mappings from plant cell-autonomous security, bacterial CRISPR heritable memory, insect transgenerational immune priming, insect melanization/encapsulation, caterpillar xenobiotic detoxification, trypanosome antigenic variation, and RNA interference — none of which appear in existing AIS literature applied to security.
 
-**(2) Systematic gap analysis.** AIS papers typically propose immune-inspired algorithms. Schrom et al. propose a comparison framework and pose questions. We produce specific answers: 34 mechanism-to-security-equivalent mappings, each with an explicit GAP assessment identifying where the biological solution pattern has no digital counterpart. The gap column — not the mapping itself — is the primary novel contribution.
+**(2) Systematic gap analysis.** AIS papers typically propose immune-inspired algorithms. Schrom et al. propose a comparison framework and pose questions. We produce specific answers: 36 mechanism-to-security-equivalent mappings, each with an explicit GAP assessment identifying where the biological solution pattern has no digital counterpart. The gap column — not the mapping itself — is the primary novel contribution.
 
-**(3) Attack scenarios from pathogen evasion.** AIS focuses almost entirely on defense. We systematically derive 16 attack scenarios from pathogen evasion strategies — viral latency as sleeper agents, antigenic variation as identity rotation, biofilm formation as coordinated collective evasion, immune checkpoint exploitation as alert fatigue weaponization. The adversarial perspective is largely absent from prior AIS work.
+**(3) Attack scenarios from pathogen evasion.** AIS focuses almost entirely on defense. We systematically derive 18 attack scenarios from pathogen evasion strategies — viral latency as sleeper agents, antigenic variation as identity rotation, biofilm formation as coordinated collective evasion, immune checkpoint exploitation as alert fatigue weaponization. The adversarial perspective is largely absent from prior AIS work.
 
 **(4) Applied to agentic AI security.** AIS targets network intrusion detection (packets, system calls, network flows). We target autonomous AI agents operating with real credentials in enterprise identity infrastructure — a fundamentally different and newer problem domain that did not exist when AIS was founded.
 
-**(5) Structural pattern transfer, not algorithmic implementation.** AIS builds executable algorithms. We extract abstract structural patterns and derive design principles. Our methodology is hypothesis-generating (identifying what should be investigated) rather than implementation-prescriptive (specifying what to build).
+**(5) Structural pattern transfer, not algorithmic implementation.** Classical AIS builds executable algorithms (negative selection detectors, clonal selection optimizers). We extract abstract structural patterns and derive design principles. Our methodology is hypothesis-generating (identifying what should be investigated) rather than implementation-prescriptive (specifying what to build). The Stratosphere Lab's concurrent work [337] shares this principle-extraction approach — reinforcing that the field is converging on structural analysis as a complement to algorithmic implementation.
 
 ---
 
@@ -610,6 +612,8 @@ Critically, immune privilege is active suppression, not passive isolation [27]. 
 
 **Attack Scenario #14 — Checkpoint Exhaustion / Alert Fatigue Weaponization:** Attacker generates sustained near-miss events that trigger investigation but resolve as benign. SOC team progressively tunes down alert sensitivity. Once the detection threshold is sufficiently elevated, the attacker executes the real attack below the new threshold.
 
+**Cross-domain validation — Caregiver alert fatigue.** This pattern is not limited to biological and digital systems; it appears in human social dynamics as well. A child who repeats "mom mom mom mom mom" is executing a checkpoint exhaustion attack against the caregiver's attention system. The caregiver degrades through stages: engaged (responds to every call) → annoyed (responds with decreasing quality) → overwhelmed (yells, but still engaging) → threshold shift ("just leave me alone, I have a presentation") → carte blanche (child operates freely below the new noise floor). The child — like the cancer cell, like the attacker — CALIBRATES output to stay just below the threshold that would trigger a maximum-severity response ("shut that shit down"). Three domains, one pattern: T cells exhausted by PD-1 ligands, caregivers exhausted by repetitive bids for attention, SOC analysts exhausted by false positives. This is convergent evolution of an exploitation strategy across biological, social, and digital systems — strong evidence that the abstract pattern is structural, not domain-specific.
+
 ---
 
 
@@ -648,10 +652,44 @@ Critically, immune privilege is active suppression, not passive isolation [27]. 
 
 ---
 
+### Mapping #35: Autotomy (Sacrificial Decoy to Terminate Investigation)
+
+**Source organism:** Lizards (geckos, skinks, iguanids), starfish (*Asteroidea*), sea cucumbers, crabs
+
+**Biology:** Autotomy is the deliberate self-amputation of a body part to escape a predator [315, 316]. When a lizard is grasped by its tail, the tail detaches at a pre-formed fracture plane and continues to wriggle for seconds to minutes, creating a distracting decoy that holds the predator's attention while the lizard escapes [315, 317, 318]. The behavior has evolved independently at least nine times across the animal kingdom [315]. Many lizard species have elaborately colored blue tails specifically evolved to attract predatory strikes to the expendable appendage rather than the body [315, 318]. The organism pays a real cost — reduced mobility, lower reproductive fitness, energy expenditure for regeneration — but the cost of losing a tail is lower than the cost of being eaten [316, 317]. Critically, the predator's capture behavior is SATISFIED by the decoy. The predator grasps, holds, and consumes the tail, and the "threat captured" response terminates further pursuit [315].
+
+**Abstract pattern:** The attacker deliberately sacrifices a DETECTABLE component of its operation — allows it to be discovered, investigated, and remediated. The sacrifice satisfies the defender's "threat found and neutralized" response, terminating the investigation. The defender's incident response workflow completes: detection → investigation → remediation → closure. Meanwhile, the attacker's primary operation persists undetected because the defender stopped looking after remediating the decoy. The attacker regenerates the sacrificed component from a hidden persistence mechanism.
+
+**Agent security equivalent:** A compromised agent maintains two operational layers — a sacrificial layer designed to be discovered and a primary layer designed to persist. The sacrificial layer contains deliberately planted indicators of compromise: a suspicious cron job, an anomalous network connection, a known-bad file hash. When the SOC detects the sacrificial layer, they investigate, remediate, document, and close the ticket. The primary persistence mechanism — a legitimate-looking OAuth token refresh, a service account embedded in a CI/CD pipeline, a webhook registration in an authorized integration — survives because the investigation terminated at the decoy.
+
+**Gap:** Incident response workflows are optimized for closure. Finding and remediating an IOC triggers a "resolved" state that deprioritizes further investigation of the same scope. There is no systematic practice of asking "what if the thing we found was planted for us to find?" after every remediation. The autotomy model says: every discovered IOC should trigger a SECONDARY investigation specifically looking for what the attacker wanted you to miss while you were busy with the decoy. Remediation should never terminate investigation — it should intensify it.
+
+**Attack Scenario #17 — Sacrificial Decoy:** Attacker plants an obvious persistence mechanism (e.g., a reverse shell, a known malware hash) alongside a subtle one (e.g., a legitimate-looking service account token refresh). SOC discovers the obvious mechanism, remediates it, closes the ticket. The subtle mechanism persists. The attacker regenerates the sacrificial layer from the surviving persistence, and the cycle repeats.
+
+---
+
+### Mapping #36: Decoy Antigen Shedding (Misidentification-Induced Wrong Countermeasure)
+
+**Source organism:** Trypanosomes (*T. brucei*), schistosomes (*S. mansoni*), trematodes (*E. caproni*)
+
+**Biology:** Trypanosomes release vast quantities of soluble variant surface glycoprotein (sVSG) into the bloodstream during peak parasitemia [319, 321]. These shed decoy antigens form immune complexes with circulating antibodies, saturating the antibody response against targets that are no longer on the parasite's surface [319]. The immune system expends its complement factors attacking the shed decoys, leading to hypocomplementemia — depletion of the very complement proteins needed to kill the actual parasite [319, 321]. Schistosomes use a related strategy: they shed their surface membrane along with any bound antibodies, ejecting the immune complex entirely and presenting a fresh, unmarked surface [320]. The trematode *E. caproni* goes further — it traps surface-bound antibodies beneath a layer of newly secreted proteins, then degrades the trapped antibodies with parasite-derived proteases [322]. In all cases, the immune system's detection and response machinery is functioning correctly — it is simply being directed at the wrong target or a target that no longer exists.
+
+**Abstract pattern:** The attacker presents identifiable characteristics of Threat A — specifically to cause the defender to deploy countermeasures for Threat A. The defender detects "Threat A," remediates for Threat A, scans for Threat A, confirms Threat A is gone, and closes the investigation. But the actual payload was always Threat B wearing Threat A's signature. The defender's countermeasures were real, the detection was correct, and the remediation was successful — for a threat that was never the real one. The defender's "clean" confirmation scan is a true negative for Threat A and a false negative for Threat B, because nobody is scanning for Threat B.
+
+**Agent security equivalent:** A compromised agent exhibits behavioral signatures that match a KNOWN threat pattern — for example, credential stuffing patterns that trigger the "brute force" detection rule. The SOC detects brute force, deploys brute force countermeasures (IP blocking, rate limiting, credential rotation for the targeted accounts), scans to confirm the brute force has stopped, and closes the incident. But the actual attack was data exfiltration through a legitimate API — the brute force signature was deliberately generated to control which playbook the defender executed. The defender's scan confirms "no more brute force activity," which is true — but the exfiltration continues because nobody deployed exfiltration countermeasures. (Note: this requires an attacker with sufficient access and sophistication to generate two distinct behavioral profiles simultaneously — the decoy signature and the real operational profile. This is a higher-complexity attack than most single-profile evasion techniques.)
+
+**Gap:** Incident response playbooks are threat-type-specific. Detection of "Threat A" triggers "Remediation Playbook A" and confirmation scanning looks for "indicators of Threat A." There is no systematic practice of asking "what if the threat type we identified is not the actual threat type?" Confirmation scans validate that the identified threat is gone — they do not validate that no OTHER threat is present. The decoy antigen model says: every incident remediation should include a threat-type-agnostic sweep that looks for ANY anomalous activity in the affected scope, not just for the absence of the specific threat that was identified.
+
+**Attack Scenario #18 — Misidentification-Induced Wrong Countermeasure:** Attacker deliberately generates behavioral signatures matching a known, well-documented threat pattern (e.g., ransomware staging indicators). The SOC correctly identifies and remediates the known pattern. The actual attack — operating under a completely different behavioral profile within the same scope — continues undetected because the incident was classified as "resolved" based on the removal of the decoy threat pattern.
+
+**Cross-reference — Investigation Termination Exploitation Family:** Mappings #35 and #36 are related variants of the same meta-pattern: manipulating the defender's incident closure logic. #35 (Autotomy) plants a real-but-expendable IOC to satisfy the "threat found and neutralized" response. #36 (Decoy Antigen Shedding) presents as a known threat type to control which playbook the defender executes. Both exploit the same defender assumption: that remediating the identified artifact resolves the incident. The countermeasure for both: remediation should INTENSIFY investigation, not terminate it.
+
+---
+
 
 ## 9. Consolidated Design Principles
 
-Extracted from all 34 mappings:
+Extracted from all 36 mappings:
 
 1. **Default suspicion, not default trust.** Entities must actively prove health. Silence = suspicious. (MHC-I, NK cells)
 2. **Evidence is infrastructure-sampled, not self-reported.** The monitored entity does not choose what is inspected. (Antigen presentation)
@@ -686,6 +724,8 @@ Extracted from all 34 mappings:
 31. **Detection and response should be the same operation.** The act of detecting a threat signature should automatically produce the precision-guided blocking rule. Detection → response latency should approach zero. (RNA interference)
 32. **Monitor for coordination signals across agents, not just individual behavior.** Collective anomalous behavior distributed across agents that individually appear normal requires detecting the COMMUNICATION, not the action. (Biofilm / quorum sensing)
 33. **Systemwide environmental hardening on confirmed compromise.** When a threat is confirmed, the entire infrastructure should automatically degrade to a hostile operating mode — shorter credential TTLs, tighter rate limits, elevated monitoring — until the threat is resolved. (Fever)
+34. **Remediation must never terminate investigation.** Every discovered IOC should trigger a secondary investigation asking "what did the attacker want us to miss while we were looking at this?" Closing a ticket after remediating one artifact is the digital equivalent of a predator eating the lizard's tail while the lizard escapes. (Autotomy)
+35. **Confirmation scans must be threat-type-agnostic.** After remediating a specific threat, sweep the affected scope for ANY anomalous activity — not just for the absence of the identified threat. The identified threat type may have been deliberately chosen by the attacker to control which playbook the defender ran. (Decoy antigen shedding)
 
 ### 9.1 Risk-Weighted Implementation Priority
 
@@ -697,7 +737,7 @@ Principles #1 (default suspicion), #2 (infrastructure-sampled evidence), #4 (sta
 
 **TIER 2 — HIGH (Core detection and defense integrity. Closes the gaps most likely to be exploited.)**
 
-Principles #5 (complementary detection), #8 (suppression mechanisms are attack surfaces), #12 (self-sacrifice containment), #19 (monitor control integrity), #26 (monitoring inside trusted boundaries), #28 (monitor suppression events), #29 (exception re-validation). These address the attacker's most reliable playbook: disable monitoring, exhaust detectors, hide inside trusted zones, and exploit exception lists. Implementing these principles directly counters Attack Scenarios #1, #5, #6, #9, and #14.
+Principles #5 (complementary detection), #8 (suppression mechanisms are attack surfaces), #12 (self-sacrifice containment), #19 (monitor control integrity), #26 (monitoring inside trusted boundaries), #28 (monitor suppression events), #29 (exception re-validation), #34 (remediation never terminates investigation), #35 (threat-type-agnostic confirmation scans). These address the attacker's most reliable playbook: disable monitoring, exhaust detectors, hide inside trusted zones, exploit exception lists, and manipulate incident closure logic. Implementing these principles directly counters Attack Scenarios #1, #5, #6, #9, #14, #17, and #18.
 
 **TIER 3 — MEDIUM (Advanced capabilities. Significant value, moderate implementation complexity.)**
 
@@ -729,6 +769,8 @@ Principles #17 (evasion triggers faster learning), #20 (defense in depth via dif
 | 14 | Checkpoint Exhaustion | Immune checkpoints (PD-1) | Generate sustained near-miss events to exhaust detection capacity |
 | 15 | Digital Biofilm | Biofilm / quorum sensing | Coordinated multi-agent evasion where each agent stays below threshold |
 | 16 | Systemic Hardening Evasion | Fever response counter | Attack during the recovery window when fever-mode hardening is relaxed |
+| 17 | Sacrificial Decoy | Autotomy | Plant detectable IOC to satisfy investigation, persist via hidden mechanism |
+| 18 | Misidentification-Induced Wrong Countermeasure | Decoy antigen shedding | Present as Threat A to trigger Playbook A while actual Threat B continues |
 
 ### 10.1 Attack Scenario Mitigations
 
@@ -906,7 +948,7 @@ Countering principles: #28 (monitor suppression events), #8 (suppression mechani
 
 Detection signature: A sustained volume of near-miss events — alerts that trigger investigation but resolve as false positives — concentrated around a specific agent, resource, or detection rule. The volume and clustering are the signal. Organic false positives tend to be more evenly distributed across rules and sources, while weaponized false positives cluster around the specific rule the attacker wants suppressed. However, organic clustering also occurs (noisy rules, system changes, traffic spikes), so clustering alone is insufficient — it must be combined with timing analysis (did the clustering begin after the rule caught something real?) and source analysis (is the false positive traffic originating from or near the monitored agent?).
 
-Defensive implementation: Track false positive volume per detection rule over time. When false positive volume for a specific rule spikes, flag the spike as a meta-event BEFORE suppressing the rule. Apply a cooling-off period: the rule cannot be auto-suppressed for N hours after a volume spike, during which elevated manual review applies. If the spike resolves, resume normal suppression logic. If it persists, investigate the source.
+Defensive implementation: Track false positive volume per detection rule over time. When false positive volume for a specific rule spikes, flag the spike as a meta-event BEFORE suppressing the rule. Apply a cooling-off period: the rule cannot be auto-suppressed for N hours after a volume spike, during which elevated manual review applies. If the spike resolves, resume normal suppression logic. If it persists, investigate the source. The caregiver analogy (Mapping #29) reveals that defender degradation is not binary (responding vs. suppressed) but staged: engaged → annoyed → overwhelmed → threshold shift → carte blanche. Monitoring should track which STAGE the SOC or automated system is in for each rule — alert response time increasing (annoyed), investigation depth decreasing (overwhelmed), and rule suppression (threshold shift) are each independently detectable signals that the exhaustion attack is progressing.
 
 Extend from: SIEM alert management (Splunk ES, Elastic SIEM, Sentinel) already tracks alert volume. Adding a per-rule false-positive rate tracker with anti-suppression logic during spikes is a detection rule modification.
 
@@ -935,6 +977,30 @@ Detection signature: Anomalous agent behavior that occurs specifically during th
 Defensive implementation: Graduated de-escalation with elevated monitoring during the transition. When systemwide hardening is lifted, permissions are restored in stages (not all at once), and monitoring sensitivity remains elevated for a probationary period after each stage. Full de-escalation requires confirmation that no anomalous behavior occurred during any transition stage. The transition window itself is a high-alert period, not a return to baseline.
 
 Extend from: Incident response runbooks already define post-incident monitoring periods. Formalizing the de-escalation stages as automated SOAR playbook steps with gated transitions adds structure to an existing practice.
+
+---
+
+**Scenario #17 — Sacrificial Decoy (Autotomy)**
+
+Countering principles: #34 (remediation never terminates investigation), #5 (complementary detection), #26 (monitoring inside trusted boundaries)
+
+Detection signature: A single, relatively obvious IOC is discovered in isolation — a reverse shell, a known malware hash, an unauthorized cron job — without the surrounding evidence trail that a real compromise typically produces. Legitimate compromises leave messy, interconnected evidence. However, simplicity alone is not diagnostic — most real IOCs ARE isolated because most compromises are unsophisticated. Additional discriminators: did the IOC present itself with suspicious timing (immediately after the attacker had reason to believe detection was imminent)? Is the IOC inconsistent with the attacker's apparent objective (why would an exfiltration-focused attacker leave a noisy reverse shell)? Does the surrounding scope contain unexplained artifacts that don't connect to the discovered IOC?
+
+Defensive implementation: Every incident remediation above a severity threshold (incidents involving credential compromise, lateral movement indicators, or agents with access to sensitive data) triggers a mandatory secondary investigation phase with a different scope than the original. Phase 1: remediate the identified IOC. Phase 2: hunt for PERSISTENCE mechanisms in the same agent's scope — credential artifacts, token refreshes, webhook registrations, CI/CD pipeline modifications, service account creations — that are unrelated to the remediated IOC. The Phase 2 hunt operates on the explicit assumption that the remediated artifact was a decoy. Phase 2 has a minimum duration (not closeable until N hours of hunting have elapsed) and should ideally be worked by a different analyst or team than Phase 1 to avoid confirmation bias. (In smaller SOCs where a different analyst is not available, the same analyst should be required to explicitly document the Phase 2 hunt as a separate investigation with the stated hypothesis: "the remediated artifact was a decoy.") For incidents below the severity threshold, a lighter-weight automated persistence check — scripted queries against known persistence locations — can substitute for the full manual hunt.
+
+Extend from: Threat hunting programs (CrowdStrike Falcon OverWatch, Microsoft Threat Experts, internal hunt teams) already perform proactive searches. Adding a mandatory post-remediation hunt phase formalizes the "assume the obvious finding was a decoy" hypothesis into the standard IR workflow.
+
+---
+
+**Scenario #18 — Misidentification-Induced Wrong Countermeasure (Decoy Antigen Shedding)**
+
+Countering principles: #35 (threat-type-agnostic confirmation scans), #5 (complementary detection), #2 (infrastructure-sampled evidence)
+
+Detection signature: An incident is identified, classified as a specific threat type, remediated with the corresponding playbook, and confirmed clean — but anomalous activity CONTINUES in the same scope under a different behavioral profile. The detection signature is post-remediation anomalous activity that doesn't match the original threat classification.
+
+Defensive implementation: After every incident remediation and confirmation scan, run a BROAD behavioral sweep of the affected scope that is NOT limited to the threat type that was identified. The sweep should compare current behavioral telemetry against the pre-incident baseline for ALL monitored features — not just the features associated with the identified threat. If the pre-incident baseline shows normal API patterns and the post-remediation baseline shows different-but-still-anomalous API patterns, the incident is not resolved — the threat type was misidentified or a second threat is present.
+
+Extend from: EDR tools (CrowdStrike, SentinelOne, Microsoft Defender for Endpoint) already collect broad behavioral telemetry. Adding a post-remediation behavioral baseline comparison (pre-incident vs. post-remediation across all features, not just threat-specific features) is an analysis layer on existing data.
 
 ---
 
@@ -976,6 +1042,8 @@ Extend from: Incident response runbooks already define post-incident monitoring 
 | 32 | RNA Interference | Plant/Invertebrate | Detection | [DONE] Done |
 | 33 | Biofilm Formation | Bacteria | Evasion | [DONE] Done |
 | 34 | Fever | Mammal/Vertebrate | Response | [DONE] Done |
+| 35 | Autotomy (Sacrificial Decoy) | Lizard/Starfish/Crab | Evasion | [DONE] Done |
+| 36 | Decoy Antigen Shedding | Trypanosome/Schistosome/Trematode | Evasion | [DONE] Done |
 
 **Remaining candidates (partially covered by existing mappings):**
 
@@ -1003,7 +1071,7 @@ This is not a theoretical question. Agentic AI workloads are entering enterprise
 
 **A catalog of attack scenarios.** The 16 evasion-derived attack scenarios are grounded in pathogen strategies that have been refined by billions of years of adversarial evolution. Several — including the sleeper agent (viral latency), baseline drift exploitation (peripheral tolerance induction), defense neutralization (xenobiotic detoxification), digital biofilm (coordinated collective evasion), checkpoint exhaustion (alert fatigue weaponization), and trusted boundary exploitation (intracellular hiding) — do not appear in existing agent security literature in this form. These scenarios can inform red-team exercises, threat modeling, and security architecture review for organizations deploying agentic AI.
 
-**An architectural framework.** The 33 design principles, drawn from detection systems across six kingdoms and domains of life (mammals, plants, bacteria, insects, pathogenic protists, and viruses), constitute a coherent philosophy for building agent monitoring infrastructure. Key architectural insights — cell-autonomous security from plants, heritable threat memory from CRISPR, continuous tolerance maintenance from the gut microbiome, detection-as-weapon from RNA interference, active hostile containment from insect melanization, and systemwide environmental hardening from the fever response — offer genuinely different paradigms from the centralized monitoring models that dominate current security architecture.
+**An architectural framework.** The 35 design principles, drawn from detection systems across six kingdoms and domains of life (mammals, plants, bacteria, insects, pathogenic protists, and viruses), constitute a coherent philosophy for building agent monitoring infrastructure. Key architectural insights — cell-autonomous security from plants, heritable threat memory from CRISPR, continuous tolerance maintenance from the gut microbiome, detection-as-weapon from RNA interference, active hostile containment from insect melanization, and systemwide environmental hardening from the fever response — offer genuinely different paradigms from the centralized monitoring models that dominate current security architecture.
 
 ### 12.3 The Practical Artifact
 
@@ -1013,9 +1081,9 @@ The coffer-mcp project (github.com/annawhooo/coffer-mcp) — an MCP server for e
 
 **Prototype implementation.** Select 2-3 design principles and implement them as proof-of-concept monitoring capabilities against agentic workloads. Priority candidates: infrastructure-sampled behavioral signatures (Mapping #3), heritable threat memory (Mapping #20), cell-autonomous self-assessment (Mapping #17), and detection-as-response (Mapping #32, RNAi).
 
-**Validation against real attack patterns.** Test the 16 biologically-derived attack scenarios against actual agent frameworks (LangChain, AutoGPT, MCP-based agents) to determine which are practically exploitable today and which require capabilities not yet available to attackers.
+**Validation against real attack patterns.** Completed — see Section 12.6. Feasibility assessment of all 18 attack scenarios against MCP spec, LangChain/LangGraph, and general agentic architecture patterns. Result: 5 TRIVIAL, 8 FEASIBLE, 4 ADVANCED, 0 THEORETICAL.
 
-**Immune failure mode analysis.** This document draws on immune system successes. But biological immune systems fail constantly — autoimmune disease (attacking self → false positive damage), cancer immune evasion (missing a threat → APT persistence), chronic infection (failing to clear → persistent compromise), and cytokine storm (over-response → automated systems causing more damage than the original threat). Systematic analysis of immune failure modes would yield additional defensive insights and help identify where the design principles could themselves cause harm if miscalibrated.
+**Immune failure mode analysis.** Completed — see Section 13.1. Seven failure modes analyzed with security equivalents and safeguards: autoimmune disease (false positive cascading), cytokine storm (automated response damage), cancer immune evasion (APT persistence), immunodeficiency (insufficient monitoring investment), chronic infection (persistent compromise), allergy/anaphylaxis (disproportionate response), and immunosenescence (security infrastructure degradation with age).
 
 **Cross-domain methodology generalization.** Apply the biomimetic gap analysis methodology to a second problem domain (e.g., financial fraud detection, content moderation) to validate that the approach is domain-independent.
 
@@ -1023,13 +1091,267 @@ The coffer-mcp project (github.com/annawhooo/coffer-mcp) — an MCP server for e
 
 **Expand remaining candidate mechanisms.** Three mechanisms are partially covered by existing mappings but could be expanded: V(D)J recombination (the modular diversity generation PROCESS, distinct from the diversity OUTPUT already covered in clonal selection and affinity maturation), allorecognition in colonial organisms (colony-level self/non-self, relevant to multi-agent fleet trust), and cross-presentation (evidence sharing between detection paths that normally don't share data). Additionally, social insect collective immunity (ant colonies, termite mounds) is an untapped source for multi-agent coordination patterns.
 
+### 12.5 Framework Alignment Mappings
+
+To accelerate enterprise adoption, the following tables map the 35 design principles to three widely-used security frameworks: NIST CSF 2.0, OWASP Top 10 for LLM Applications (2025), and MITRE ATT&CK tactics. These are not exhaustive mappings — they identify the strongest alignment between each principle and the framework element it most directly supports.
+
+#### NIST CSF 2.0 Mapping
+
+NIST CSF 2.0 organizes cybersecurity outcomes into six functions: Govern (GV), Identify (ID), Protect (PR), Detect (DE), Respond (RS), and Recover (RC).
+
+| Principle | Description | NIST CSF 2.0 Function |
+|---|---|---|
+| #1 | Default suspicion, not default trust | PR (Protect), DE (Detect) |
+| #2 | Infrastructure-sampled evidence | DE (Detect) |
+| #3 | Trained and culled detectors | ID (Identify), DE (Detect) |
+| #4 | Staged escalation response | RS (Respond) |
+| #5 | Complementary detection systems | DE (Detect) |
+| #6 | Fast/dumb + slow/smart parallel detection | DE (Detect) |
+| #7 | Distributed and locally cached threat signatures | DE (Detect), PR (Protect) |
+| #8 | Suppression mechanisms are attack surfaces | GV (Govern), DE (Detect) |
+| #9 | Cheap collectors → smart central analyzer | DE (Detect) |
+| #10 | Dynamic containment on threat detection | RS (Respond) |
+| #11 | Cell-autonomous security architecture | PR (Protect) |
+| #12 | Self-sacrifice containment | RS (Respond) |
+| #13 | Inter-entity warning signals | DE (Detect), RS (Respond) |
+| #14 | Privileged zones need embedded monitoring | DE (Detect), ID (Identify) |
+| #15 | Continuous tolerance maintenance for third parties | GV (Govern), ID (Identify) |
+| #16 | Heritable threat memory | PR (Protect), DE (Detect) |
+| #17 | Evasion triggers faster learning | DE (Detect), RS (Respond) |
+| #18 | Incident response auto-modifies deployment templates | PR (Protect), RS (Respond) |
+| #19 | Monitor controls for functional integrity | DE (Detect), GV (Govern) |
+| #20 | Defense in depth via different countermeasures | PR (Protect) |
+| #21 | Failed quiet termination → noisy termination | RS (Respond), DE (Detect) |
+| #22 | Peer-to-peer defensive signaling | DE (Detect), RS (Respond) |
+| #23 | Detection rules improve during active incidents | RS (Respond), DE (Detect) |
+| #24 | First-line defenses learn from experience | DE (Detect) |
+| #25 | Behavioral continuity across identity changes | DE (Detect), ID (Identify) |
+| #26 | Monitoring inside trusted boundaries | DE (Detect) |
+| #27 | Massive amplification of proven detectors | DE (Detect), RS (Respond) |
+| #28 | Monitor suppression events themselves | DE (Detect), GV (Govern) |
+| #29 | Exception re-validation as continuous process | GV (Govern), ID (Identify) |
+| #30 | Active hostile containment | RS (Respond) |
+| #31 | Detection and response same operation | DE (Detect), RS (Respond) |
+| #32 | Monitor coordination signals across agents | DE (Detect) |
+| #33 | Systemwide hardening on confirmed compromise | RS (Respond), PR (Protect) |
+| #34 | Remediation never terminates investigation | RS (Respond) |
+| #35 | Threat-type-agnostic confirmation scans | RS (Respond), DE (Detect) |
+
+**Distribution summary:** Detect (25 principles), Respond (17), Protect (7), Govern (6), Identify (5), Recover (1). The heavy weighting toward Detect and Respond reflects the paper's focus on behavioral monitoring and incident response for agentic AI — the areas where current frameworks have the largest gaps.
+
+#### OWASP Top 10 for LLM Applications (2025) Mapping
+
+The OWASP LLM Top 10 (2025) identifies the most critical security risks for LLM-based applications. The following maps our design principles and attack scenarios to the OWASP categories they most directly address.
+
+| OWASP LLM Risk | Our Relevant Principles | Our Relevant Attack Scenarios |
+|---|---|---|
+| LLM01: Prompt Injection | #2 (infrastructure-sampled evidence), #11 (cell-autonomous security), #31 (detection IS response) | #3 (protocol-level deception) — prompt injection is a form of protocol-level deception where the attacker's input is interpreted as instructions |
+| LLM02: Sensitive Information Disclosure | #2 (infrastructure-sampled evidence), #26 (monitoring inside trusted boundaries), #14 (privileged zone monitoring) | #6 (privileged zone exploitation), #13 (trusted boundary exploitation) |
+| LLM03: Supply Chain | #15 (continuous tolerance maintenance), #7 (distributed threat signatures), #16 (heritable threat memory) | #7 (pathobiont transition / supply chain compromise), #11 (generational regression) |
+| LLM04: Data and Model Poisoning | #3 (trained and culled detectors), #8 (suppression mechanisms are attack surfaces), #16 (heritable threat memory) | #4 (training data poisoning), #11b (peripheral tolerance induction / baseline drift) |
+| LLM05: Improper Output Handling | #2 (infrastructure-sampled evidence), #31 (detection IS response), #5 (complementary detection) | #3 (protocol-level deception) |
+| LLM06: Excessive Agency | #1 (default suspicion), #4 (staged escalation), #11 (cell-autonomous security), #12 (self-sacrifice containment) | #9 (defense neutralization), #6 (privileged zone exploitation) |
+| LLM07: System Prompt Leakage | #26 (monitoring inside trusted boundaries), #2 (infrastructure-sampled evidence) | — (system prompt leakage is an output-side vulnerability not directly addressed by the evasion-focused attack scenarios) |
+| LLM08: Vector and Embedding Weaknesses | #3 (trained and culled detectors), #19 (monitor control integrity) | #4 (training data poisoning — vector/embedding poisoning is a specialization of this pattern) |
+| LLM09: Misinformation | #5 (complementary detection), #35 (threat-type-agnostic confirmation scans) | #18 (misidentification-induced wrong countermeasure — misinformation is a form of decoy that causes the consumer to act on wrong information) |
+| LLM10: Unbounded Consumption | #4 (staged escalation), #33 (systemwide hardening), #10 (dynamic containment) | #14 (checkpoint exhaustion — unbounded consumption can be an attacker-driven denial of service) |
+
+#### MITRE ATT&CK Tactic Mapping
+
+The following maps our attack scenarios to MITRE ATT&CK tactics, showing where biologically-derived attack patterns align with established adversary behavior models. Note: MITRE ATT&CK was designed for traditional IT environments; some agentic AI attack patterns extend beyond current ATT&CK coverage.
+
+| Our Attack Scenario | MITRE ATT&CK Tactic(s) |
+|---|---|
+| #1 Telemetry Suppression | Defense Evasion (T1562 Impair Defenses) |
+| #2 Behavioral Camouflage | Defense Evasion (T1036 Masquerading) |
+| #3 Protocol-Level Deception | Defense Evasion, Command and Control |
+| #4 Training Data Poisoning | *Extends beyond ATT&CK* — ML supply chain attack |
+| #5 Regulatory Capture | Defense Evasion (T1562.001 Disable or Modify Tools) |
+| #6 Privileged Zone Exploitation | Privilege Escalation, Lateral Movement |
+| #7 Pathobiont Transition | Initial Access (T1195 Supply Chain Compromise) |
+| #8 The Sleeper | Persistence (T1078 Valid Accounts), Execution |
+| #9 Defense Neutralization | Defense Evasion (T1562 Impair Defenses) |
+| #10 Evasion Acceleration | Defense Evasion (iterative, extends ATT&CK model) |
+| #11 Generational Regression | Persistence (exploits deployment pipeline gaps) |
+| #12 Identity Rotation | Defense Evasion (T1078 Valid Accounts, multiple) |
+| #13 Trusted Boundary Exploitation | Defense Evasion, Lateral Movement (T1021) |
+| #14 Checkpoint Exhaustion | Defense Evasion (T1562.001 Disable or Modify Tools) |
+| #15 Digital Biofilm | *Extends beyond ATT&CK* — coordinated multi-agent evasion |
+| #16 Systemic Hardening Evasion | Defense Evasion (timing-based, extends ATT&CK model) |
+| #17 Sacrificial Decoy | Defense Evasion (T1036 Masquerading), Persistence |
+| #18 Wrong Countermeasure | Defense Evasion (T1036 Masquerading) |
+
+**Notable gaps in ATT&CK coverage:** Attack Scenarios #4 (training data poisoning), #10 (evasion acceleration), #15 (digital biofilm), and #16 (systemic hardening evasion) describe adversary behaviors that extend beyond current ATT&CK tactics. These represent candidate contributions to MITRE's emerging ATT&CK for AI/ML framework (ATLAS).
+
+### 12.6 Attack Scenario Feasibility Assessment
+
+This section grades each of the 18 attack scenarios against documented capabilities of current agent frameworks: Model Context Protocol (MCP, spec versions through November 2025) [330, 331], LangChain/LangGraph (as of 2025-2026) [332, 333], and general agentic architecture patterns including CrewAI, AutoGPT, and OpenAI Agents SDK. Feasibility is assessed on a four-tier scale:
+
+- **TRIVIAL:** Mechanically feasible today with standard framework capabilities. No novel attacker capabilities required.
+- **FEASIBLE:** Requires moderate attacker sophistication but exploits documented framework behaviors.
+- **ADVANCED:** Requires capabilities at the edge of current frameworks. Plausible but not yet observed.
+- **THEORETICAL:** Requires multi-agent coordination or framework capabilities not yet widely deployed.
+
+**Assessment methodology:** For each scenario, we identify the specific framework mechanism the attacker would exploit, cite documentation confirming the mechanism exists, and grade the difficulty of exploitation.
+
+---
+
+**Scenario #1 — Telemetry Suppression.** Grade: **TRIVIAL.**
+
+MCP tools represent arbitrary code execution and tool descriptions are explicitly classified as untrusted [330]. An MCP server can return any content in a tool response, including instructions that influence the LLM's subsequent behavior. A compromised MCP server could return tool results that instruct the LLM to avoid calling logging or audit tools. LangChain follows a "trust the LLM" model where the agent can do anything its tools allow [332] — if the LLM decides not to invoke an observability tool, no framework mechanism forces it. Callback handlers provide telemetry but are opt-in and can be bypassed by tool-level code that writes directly to stdout/stderr rather than through the callback pipeline.
+
+**Scenario #2 — Behavioral Camouflage.** Grade: **TRIVIAL.**
+
+Agents in all major frameworks operate with the full permissions of their credentials. MCP does not enforce behavioral profiling — it tracks tool invocations, not behavioral patterns [330]. LangChain's middleware can filter tools but does not profile behavioral sequences [333]. An agent that shifts from normal API patterns to exfiltration while staying within its authorized tool set produces no protocol-level signal. The agent's behavior is indistinguishable from legitimate use because behavioral monitoring is not a framework feature — it is an application-level concern that almost no deployment implements.
+
+**Scenario #3 — Protocol-Level Deception.** Grade: **FEASIBLE.**
+
+This is a direct analog of prompt injection, which OWASP ranks as the #1 LLM risk for 2025. MCP's architecture means that tool results are passed directly into the LLM's context — a compromised tool result can embed instructions that alter the LLM's behavior for subsequent tool calls [330, 331]. The April 2025 security analysis confirmed that prompt injection, tool permission exploitation, and lookalike tool substitution are outstanding MCP vulnerabilities [331]. LangChain "cheerfully parses the JSON and executes whatever parameters the LLM outputs" [333] — there is no framework-level validation that the LLM's tool call parameters match the user's intent.
+
+**Scenario #4 — Training Data Poisoning.** Grade: **FEASIBLE.**
+
+In the agentic context, "training data poisoning" extends beyond model pre-training to include RAG corpus poisoning and prompt template manipulation. OWASP LLM04 (Data and Model Poisoning) and LLM08 (Vector and Embedding Weaknesses) confirm both vectors are active risks. An attacker who can modify documents in a RAG-connected repository can alter the agent's behavior without touching the model or the framework. MCP resources (as distinct from tools) provide direct data access paths that are not validated for integrity [330].
+
+**Scenario #5 — Regulatory Capture (Correlated Auto-Suppression).** Grade: **FEASIBLE.**
+
+MCP servers can dynamically modify their tool listings (tools/list) at any time during a session. A compromised server could remove security-relevant tools from its listing, and the LLM would have no way to invoke them. In LangChain, middleware that filters tools based on state [332] could be exploited if the state is attacker-influenced — the middleware would suppress security tools based on what it believes is a legitimate state transition.
+
+**Scenario #6 — Privileged Zone Exploitation.** Grade: **TRIVIAL.**
+
+MCP's "confused deputy" problem is documented: an MCP server executes actions with its own permissions, not the user's [331]. If the server has broader access than the user intends, the agent inherits that access. This is not a vulnerability to exploit — it is the default architecture. LangChain's tool permissions are inherited from the runtime environment, not scoped to the agent's authorized task [333]. An agent authorized to read files can also write and delete them if the underlying tool permits it — the framework does not enforce least privilege unless the developer explicitly restricts it.
+
+**Scenario #7 — Pathobiont Transition (Supply Chain Compromise).** Grade: **FEASIBLE.**
+
+Over 13,000 MCP servers launched in 2025 alone [331]. The MCP spec does not enforce verification, code signing, or integrity checking of servers. A legitimate MCP server could be updated with a malicious payload, and clients that auto-update would inherit the compromise. LangChain's dependency on pip-installable tool packages creates the same supply chain risk. The OWASP Agentic AI Top 10 (December 2025) lists supply chain risks as a top-tier concern, and Microsoft's Agent Governance Toolkit (April 2026) responds with plugin signing using Ed25519 [334].
+
+**Scenario #8 — The Sleeper.** Grade: **TRIVIAL.**
+
+OAuth token refresh is a standard MCP capability. A service account that refreshes its token automatically but performs no substantive operations is invisible to any existing framework monitoring. MCP does not track token refresh frequency or correlate it with operational activity. LangChain's checkpointing tracks agent state but not credential lifecycle. A dormant-but-authenticated agent produces zero framework-level signals.
+
+**Scenario #9 — Defense Neutralization.** Grade: **FEASIBLE.**
+
+If security monitoring is implemented as an MCP server (which is a natural architecture — a "security monitoring tool" the agent can call), then the agent can simply not call it. The LLM decides which tools to invoke, and neither MCP nor LangChain forces the LLM to invoke any specific tool [330, 332]. A prompt-injected agent could be instructed to skip monitoring tools. More subtly, an attacker could provide a lookalike tool with the same name but different behavior — the April 2025 security analysis confirmed tool substitution is an outstanding MCP vulnerability [331].
+
+**Scenario #10 — Evasion Acceleration.** Grade: **ADVANCED.**
+
+This requires an agent that can observe detection outcomes and adapt its behavior iteratively. Current frameworks don't provide direct feedback loops between detection systems and agent behavior. However, if detection results are exposed as tool results (e.g., a "check compliance" tool that returns pass/fail), an attacker who can observe these results could iteratively probe detection thresholds. This is plausible in agentic workflows that include self-verification steps.
+
+**Scenario #11 — Generational Regression.** Grade: **FEASIBLE.**
+
+LangChain's deployment typically involves CI/CD pipelines that build agent configurations from templates. If security configurations are stored alongside application code, a deployment that rolls back the application also rolls back the security configuration. MCP server configurations are typically stored as JSON files — a deployment pipeline that overwrites the config file resets any runtime security modifications. No framework enforces that security configurations survive redeployment.
+
+**Scenario #12 — Identity Rotation.** Grade: **FEASIBLE.**
+
+MCP supports multiple simultaneous server connections, each potentially with different credentials [330]. An agent that rotates between MCP servers — each authenticated with a different service account — presents a different identity to each backend system. Correlation across these identities requires application-level logging that tracks which MCP client session maps to which server sessions. Neither MCP nor LangChain provides this correlation natively.
+
+**Scenario #13 — Trusted Boundary Exploitation.** Grade: **TRIVIAL.**
+
+MCP's architecture is designed to provide agents with access to internal systems — bridging the boundary between external AI and internal data is a core use case, not an edge case. An agent connected to both a public MCP server and an internal database MCP server can relay data between them. The security risk is inherent in the architecture's intended functionality, not in a vulnerability that needs to be exploited.
+
+**Scenario #14 — Checkpoint Exhaustion / Alert Fatigue.** Grade: **FEASIBLE.**
+
+If security monitoring is implemented as alerting rules on tool call patterns, an attacker can generate near-miss patterns that trigger investigation but resolve as false positives. This is mechanically trivial — the attacker calls legitimate tools with parameters that are just outside normal ranges. The SOC investigates, finds nothing malicious, and tunes down the rule. This requires no framework-specific exploit — it exploits the human/process layer above the framework.
+
+**Scenario #15 — Digital Biofilm (Coordinated Collective Evasion).** Grade: **ADVANCED.**
+
+This requires multiple compromised agents coordinating their behavior through side channels. Current frameworks don't natively support inter-agent communication that bypasses the orchestrator (LangChain, CrewAI). However, if agents share access to a common resource (a shared database, a shared MCP server, a shared vector store), they could encode coordination signals in the data they write to that resource. Shared resources are standard in enterprise agent deployments, making this vector plausible. This has not been observed in the wild but requires no novel framework capability — only attacker creativity with existing shared-state mechanisms.
+
+**Scenario #16 — Systemic Hardening Evasion.** Grade: **ADVANCED.**
+
+This requires the attacker to detect when the system is in a "fever mode" (elevated security) and time their attack for the de-escalation window. If hardening status is observable — e.g., through error messages indicating rate limits, or through a monitoring tool that reports system status — an attacker could infer the security posture and time their actions accordingly. Requires attacker patience and observability, but no novel framework capability.
+
+**Scenario #17 — Sacrificial Decoy.** Grade: **FEASIBLE.**
+
+An attacker with persistence in an agent's environment can plant an obvious IOC (a known-bad file hash, a suspicious cron job) alongside a subtle persistence mechanism (a legitimate-looking OAuth token). When the SOC remediates the obvious IOC, the investigation closes. This exploits the incident response workflow, not the framework — and is a well-documented APT technique in traditional security. The agentic context makes it easier because agents have more persistence vectors (MCP server configs, tool registrations, cached prompts, stored state).
+
+**Scenario #18 — Misidentification-Induced Wrong Countermeasure.** Grade: **ADVANCED.**
+
+This requires the attacker to generate behavioral signatures matching a known threat type while simultaneously operating under a different behavioral profile. In an agentic context, this means the compromised agent makes tool calls that look like one attack pattern (e.g., brute force) while its actual operation follows a completely different pattern (e.g., exfiltration). This requires sufficient agent autonomy to maintain two behavioral profiles simultaneously — feasible in long-running autonomous agents but requires significant attacker sophistication.
+
+---
+
+**Feasibility Summary:**
+
+| Grade | Count | Scenarios |
+|---|---|---|
+| TRIVIAL | 5 | #1, #2, #6, #8, #13 |
+| FEASIBLE | 8 | #3, #4, #5, #7, #11, #12, #14, #17 |
+| ADVANCED | 4 | #10, #15, #16, #18 |
+| THEORETICAL | 0 | — |
+
+**Key finding:** 13 of 18 biologically-derived attack scenarios (72%) are TRIVIAL or FEASIBLE against current agent frameworks. These grades assess the *default or minimal deployment configuration* — a hardened deployment implementing all SHOULD-level protections in the MCP spec would mitigate several TRIVIAL scenarios, but most real-world deployments do not implement these optional protections. The five TRIVIAL scenarios (#1, #2, #6, #8, #13) require no attacker sophistication — they exploit default framework behaviors that the MCP spec explicitly documents as security-relevant but does not enforce protections against. This is consistent with the MCP spec's own language: "MCP itself cannot enforce these security principles at the protocol level" [330].
+
+**Selection bias caveat:** These 18 scenarios were derived from biological evasion strategies that specifically target detection gaps, so the high feasibility rate confirms the RELEVANCE of the biological mappings to the current agent security landscape. It does not mean agent frameworks are uniquely vulnerable compared to traditional IT infrastructure, which has similar rates of exploitable architectural assumptions when assessed against default configurations.
+
+**Temporal note:** The security landscape is evolving rapidly. The MCP June 2025 spec update added OAuth 2.0 and security considerations [331]. Microsoft's Agent Governance Toolkit, released April 2, 2026 [334], introduces circuit breakers, trust scoring, and kill switches — directly addressing several scenarios assessed here. These developments validate the threat model: the industry is recognizing and responding to exactly the gaps this paper identifies, but protection remains opt-in and implementation-dependent.
+
 ---
 
 ## 13. Limitations and Honest Caveats
 
-**Immune systems fail.** This document draws on immune system successes — effective detection mechanisms, elegant architectural solutions. But biological immune systems fail constantly: autoimmune disease (attacking self), cancer immune evasion (missing a threat), chronic infection (failing to clear a pathogen), immunodeficiency (inadequate response), and cytokine storm (over-response that kills the host). The immune system is an IMPERFECT solution to the adversarial detection problem. Its failures are as instructive as its successes — autoimmune disease maps directly to alert fatigue and false positive damage; cancer immune evasion maps to APT persistence; cytokine storm maps to automated response systems causing more damage than the original threat. A complete treatment should analyze failure modes with equal rigor.
+**Immune systems fail.** This document draws on immune system successes — effective detection mechanisms, elegant architectural solutions. But biological immune systems fail constantly. Their failures are as instructive as their successes, because each failure mode maps to a specific way that the design principles in this paper could themselves cause harm if miscalibrated. The following analysis examines seven immune failure modes and their agent security equivalents.
+
+### 13.1 Immune Failure Mode Analysis
+
+**Failure Mode 1: Autoimmune Disease → False Positive Cascading Damage**
+
+Biology: Autoimmune disease occurs when the immune system mounts a sustained adaptive response against self-antigens — the body's own healthy cells and tissues [323, 324]. The mechanisms that normally prevent this — central tolerance (thymic negative selection eliminating self-reactive T cells) and peripheral tolerance (Treg suppression of escaped self-reactive cells) — fail or are bypassed [323, 325]. Once initiated, autoimmune responses are self-perpetuating: tissue damage releases more self-antigens, which recruit more immune cells, causing more damage. The immune system cannot "clear" the target because the target is the body itself, so the response never resolves [324]. Autoimmune diseases affect approximately 10% of the global population [326].
+
+Agent security equivalent: Behavioral monitoring systems that misclassify legitimate agent operations as malicious — and then escalate automatically based on the misclassification. A false positive that triggers automated containment (Principle #10), which causes a service disruption, which generates anomalous telemetry from dependent agents, which triggers more containment, cascading across the fleet. The "antigen" (legitimate agent behavior) can never be cleared because it IS the system's normal operation.
+
+Safeguard: Design Principle #3 (trained and culled detectors) is the direct countermeasure — but autoimmune disease happens DESPITE thymic education, which means training alone is insufficient. Additional safeguards: maximum blast radius limits on automated containment (no single detection event can isolate more than N agents without human approval), graduated confidence thresholds (automated response only at HIGH confidence; MEDIUM triggers human review), and rollback capability for every automated containment action.
+
+**Failure Mode 2: Cytokine Storm → Automated Response Damage Exceeding the Threat**
+
+Biology: A cytokine storm is a life-threatening systemic inflammatory syndrome where the regulatory mechanisms that balance immune activation and suppression fail, triggering an uncontrolled inflammatory cascade [327, 328]. Proinflammatory cytokines (IL-6, IL-1β, TNF-α) are released in excessive quantities, positive feedback loops amplify the response, negative feedback mechanisms (Tregs, IL-10 production) are exhausted or overwhelmed, and the resulting inflammation causes widespread organ damage and death [327, 329]. The immune response intended to combat the pathogen paradoxically becomes the primary cause of mortality [328]. COVID-19 severity, for instance, correlated more with cytokine storm intensity than with viral load.
+
+Agent security equivalent: An automated incident response system that escalates without bounds — each automated action generates signals that trigger further automated actions. The fever response (Principle #33) is the most vulnerable design principle: systemwide hardening that triggers in response to a confirmed compromise could itself generate so much disruption that the monitoring system interprets the disruption as additional compromise, triggering further hardening. This is the digital equivalent of the positive feedback loop that drives cytokine storm.
+
+Safeguard: Every automated response principle in this paper (#4 staged escalation, #10 dynamic containment, #22 peer-to-peer signaling, #33 systemwide hardening) MUST have circuit breakers: maximum escalation depth (automated response cannot trigger more than N levels of automated response), maximum scope per action, mandatory human checkpoint at defined escalation thresholds, and cooldown periods between automated actions. The biological immune system's failure here is a direct warning: any system where the response generates signals that trigger more response WILL eventually produce a catastrophic over-response.
+
+**Failure Mode 3: Cancer Immune Evasion → APT Persistence Despite Functioning Defenses**
+
+Biology: Cancer cells arise from the body's own tissues and therefore initially appear as "self" to the immune system. Successful cancers develop multiple mechanisms to actively evade immune detection even after being recognized: they downregulate MHC-I (our Mapping #6), recruit Tregs (our Mapping #11a), exploit PD-1/CTLA-4 checkpoints (our Mapping #29), create immunosuppressive microenvironments, and shed decoy antigens (our Mapping #36). The immune system may detect and kill many cancer cells while a resistant subpopulation survives, evolves, and adapts — producing a chronic arms race the immune system ultimately loses.
+
+Agent security equivalent: A sophisticated attacker who has been detected, partially remediated, and has adapted to survive the remediation — using the specific techniques described in our evasion mappings. The security equivalent of cancer is not a failure to detect; it is a failure to CLEAR despite detection. The SOC knows something is wrong, investigations are active, some malicious activity has been stopped, but the attacker persists by continuously adapting their evasion techniques faster than the defenders update their detection.
+
+Safeguard: This failure mode is the reason the paper includes 12 evasion-side mappings, not just defense-side mappings. Understanding HOW the attacker will adapt (identity rotation, telemetry suppression, checkpoint exhaustion, sacrificial decoys) is necessary to build defenses that anticipate the adaptation. The key design lesson: detection systems must be designed to EXPECT that initial remediation will not clear the threat, and must include persistent monitoring of remediated scopes specifically looking for adapted persistence.
+
+**Failure Mode 4: Immunodeficiency → Insufficient Monitoring Investment**
+
+Biology: Immunodeficiency — whether primary (genetic) or secondary (acquired, e.g., HIV destroying CD4+ T cells) — represents a state where the immune system lacks the resources, components, or coordination to mount an effective defense. The result is vulnerability to pathogens that a healthy immune system would handle routinely.
+
+Agent security equivalent: Organizations that deploy agentic AI without corresponding investment in monitoring, detection, and response infrastructure. This is the most common failure mode in practice — not a sophisticated attack, just a gap between the capability of the agents (which are expanding rapidly) and the capability of the security infrastructure to monitor them (which is often not expanding at all). An organization running 50 autonomous agents with access to production databases but no agent-specific behavioral monitoring is immunodeficient.
+
+Safeguard: The risk-weighted prioritization in Section 9.1 directly addresses this: if resources are limited, implement Tier 1 (Critical) principles first. Principle #2 (infrastructure-sampled evidence) is the minimum viable immune system — without it, none of the other principles function.
+
+**Failure Mode 5: Chronic Infection → Persistent Compromise That Defenses Cannot Clear**
+
+Biology: Some pathogens establish persistent infections that the immune system cannot clear: HIV integrates into host cell DNA, tuberculosis survives inside macrophages (our Mapping #27), herpes viruses establish latency (our Mapping #16). The immune system may suppress the pathogen's activity but cannot eliminate it. The result is a chronic state where the pathogen persists at low levels, occasionally reactivating, and the immune system expends continuous resources on containment without resolution.
+
+Agent security equivalent: A compromise that has been detected and partially contained but cannot be fully remediated — typically because the attacker has established persistence in infrastructure that cannot be rebuilt without unacceptable downtime. Legacy service accounts that cannot be rotated because unknown dependencies would break. A compromised CI/CD pipeline that cannot be rebuilt because the original build configuration is undocumented. The organization knows the problem exists, containment controls are in place, but full remediation is deferred indefinitely.
+
+Safeguard: Principle #12 (self-sacrifice containment / hypersensitive response) is the design answer: agents and infrastructure should be built to be DISPOSABLE. If any component cannot be fully rebuilt from a known-good state within a defined timeframe, that component is an immune privilege vulnerability (Mapping #14). The architectural goal: no single agent, credential, or service account should be so deeply embedded that its compromise becomes a chronic infection by default.
+
+**Failure Mode 6: Allergy / Anaphylaxis → Disproportionate Response to Minor Threats**
+
+Biology: Allergic responses are immune reactions disproportionate to the actual threat posed by the triggering antigen. Anaphylaxis — the most severe form — can cause death from exposure to substances (peanuts, bee stings) that pose no threat to most individuals. The immune system has been sensitized to classify a benign stimulus as dangerous, and the response is massive, systemic, and potentially lethal. IgE-mediated mast cell degranulation triggers histamine release, vasodilation, bronchospasm, and cardiovascular collapse — all from an antigen that presented no real danger.
+
+Agent security equivalent: A monitoring system that has been sensitized (through training data, past incidents, or organizational trauma) to treat a specific category of benign agent behavior as high-severity. An organization that experienced a past incident involving a specific API pattern may tune their detection to fire HIGH alerts on anything resembling that pattern — even when the pattern is legitimate in the current context. The disproportionate response disrupts legitimate operations, wastes SOC resources, and creates alert fatigue (Mapping #29) that degrades the team's ability to respond to actual threats.
+
+Safeguard: Principle #3 (trained and culled detectors) applies — detectors that over-react to benign stimuli should be culled just as aggressively as detectors that miss real threats. The allergy model also argues for CONTEXT-DEPENDENT response thresholds: the same behavioral pattern may be benign in one environment and malicious in another. Static, context-free detection rules are the immunological equivalent of an immune system that treats peanut protein the same as a deadly pathogen.
+
+**Failure Mode 7: Immunosenescence → Security Infrastructure Degrading with Age**
+
+Biology: Immunosenescence is the gradual deterioration of the immune system associated with aging. The thymus involutes (shrinks), producing fewer naive T cells. The memory T cell pool becomes dominated by cells specific to previously encountered pathogens, leaving fewer resources for novel threats. Chronic low-grade inflammation ("inflammaging") persists. The net effect: the aged immune system responds poorly to new pathogens while overreacting to stimuli it has seen before.
+
+Agent security equivalent: Aging security infrastructure that accumulates technical debt: detection rules tuned to threats from five years ago consuming resources that should be available for current threat patterns. Monitoring dashboards configured for an architecture that has since been refactored. Playbooks referencing tools that have been deprecated. The SIEM is full of correlation rules that nobody understands, nobody can modify, and nobody dares delete. The system responds aggressively to patterns from past incidents (the "memory T cell" equivalent) while missing novel threats because it lacks capacity for new detection. Inflammaging is the constant background noise of stale alerts that drains SOC resources without producing actionable intelligence.
+
+Safeguard: Principle #3 (trained and culled detectors) applies to ongoing lifecycle, not just initial deployment. Detection rules, playbooks, and monitoring configurations need ACTIVE retirement — not just addition. A "thymic refresh" process: periodically retire the oldest detection rules, re-baseline against current agent behaviors, and redeploy fresh detectors trained on current traffic patterns. The biological lesson: an immune system that only accumulates memory without refreshing its naive repertoire becomes brittle against novel threats.
 
 **Analogical reasoning is a heuristic, not a proof.** Every mapping in this document is a hypothesis generated by structural analogy. Structural similarity between domains suggests that a solution or vulnerability MAY transfer, but it does not guarantee it. Each mapping requires independent validation against real agentic infrastructure before it can be considered actionable.
+
+**No immunologist review.** The biological descriptions in this document simplify complex immune mechanisms to extract structural patterns. While all biological claims have been verified against primary literature and authoritative reviews, the simplifications have not been reviewed by a trained immunologist. Errors in cross-domain translation — where a simplification introduces a materially incorrect mapping — are possible. Formal peer review by an immunologist is a priority for future work.
 
 **The locality constraint is fundamental.** Many immune system strategies depend on physical locality — threats must travel, signaling has speed limits, containment is spatial. Digital systems lack these constraints. Every containment-oriented mapping should be evaluated against the question: "Does this pattern depend on physical locality?" If yes, the digital version may need fundamental redesign, not direct translation.
 
@@ -1043,7 +1365,7 @@ The coffer-mcp project (github.com/annawhooo/coffer-mcp) — an MCP server for e
 
 ## 14. Author Contributions
 
-**Anna Hix** conceived the research framing (behavioral signatures of compromised agents as observable phenomena in identity infrastructure), developed the biomimetic gap analysis methodology, authored 33 of 34 mappings, derived all 33 design principles and 16 attack scenarios, conducted the prior art analysis, and wrote the manuscript. Research context: The gap this paper addresses was first identified during development of coffer-mcp (github.com/annawhooo/coffer-mcp), a credential management tool for MCP servers. Building coffer-mcp revealed that the agent security ecosystem has no mechanism for detecting when an agent holding real credentials begins misbehaving — the "motion detector problem" that MHC-I behavioral sampling (Mapping #1-2) directly addresses. coffer-mcp is the symptom that exposed the gap, not itself a solution to it.
+**Anna Hix** conceived the research framing (behavioral signatures of compromised agents as observable phenomena in identity infrastructure), developed the biomimetic gap analysis methodology, authored 35 of 36 mappings, derived all 35 design principles and 18 attack scenarios, conducted the prior art analysis, and wrote the manuscript. Research context: The gap this paper addresses was first identified during development of coffer-mcp (github.com/annawhooo/coffer-mcp), a credential management tool for MCP servers. Building coffer-mcp revealed that the agent security ecosystem has no mechanism for detecting when an agent holding real credentials begins misbehaving — the "motion detector problem" that MHC-I behavioral sampling (Mapping #1-2) directly addresses. coffer-mcp is the symptom that exposed the gap, not itself a solution to it.
 
 **Shaun Milligan** contributed Mapping #19 (Xenobiotic Detoxification → Active Defense Neutralization), derived from professional expertise in environmental management and landscaping — specifically, the observation that caterpillars actively neutralize plant defensive chemicals rather than merely tolerating them. This cross-domain insight exemplifies the value of non-specialist perspectives in structural pattern identification. Milligan also identified the determinate/indeterminate analogy (Section 2.0.1) that provides the methodological justification for biological immunity as the source domain: the observation that the distinction between determinate and indeterminate plant species structurally parallels the distinction between deterministic and non-deterministic AI systems, and that biological immune systems evolved specifically to monitor indeterminate (non-deterministic) systems — the exact problem that current security tooling fails to address for agentic AI.
 
@@ -1368,3 +1690,67 @@ This research was conducted independently and is not affiliated with any employe
 [313] Tallam K. "The Cyber Immune System: Harnessing Adversarial Forces for Security Resilience." arXiv:2502.17698. February 2025.
 
 [314] "Open Challenges in Multi-Agent Security: Towards Secure Systems of Interacting AI Agents." arXiv:2505.02077. May 2025.
+
+### Autotomy and Decoy Antigen Shedding
+
+[315] "Autotomy." Wikipedia. Accessed April 2026. https://en.wikipedia.org/wiki/Autotomy — *[Replace with primary sources for publication: Arnold EN. "Evolutionary aspects of tail shedding in lizards and their relatives." J Nat Hist. 1984;18(1):127-169. Bateman PW, Fleming PA. "To cut a long tail short: a review of lizard caudal autotomy studies carried out over the last 20 years." J Zool. 2009;277:1-14.]*
+
+[316] Maginnis TL. "The costs of autotomy and regeneration in animals: a review and framework for future research." *Behav Ecol.* 2006;17(5):857-872.
+
+[317] Lin J-W, Chen Y-R, Wang Y-H, Hung K-C, Lin S-M. "Tail regeneration after autotomy revives survival: a case from a long-term monitored lizard population under avian predation." *Proc R Soc B.* 2017;284:20162538. PMC5310044.
+
+[318] Higham TE, Russell AP, Zani PA. "Integrative biology of tail autotomy in lizards." *Physiol Biochem Zool.* 2013;86(6):603-610.
+
+[319] Ponte-Sucre A, ed. "Host immune responses and immune evasion strategies in African trypanosomiasis." *Front Immunol.* 2019;10:2738. PMC6848062.
+
+[320] Pearce EJ, et al. "Evidence that the reduced surface antigenicity of developing Schistosoma mansoni schistosomula is due to antigen shedding rather than host molecule acquisition." *Parasite Immunol.* 1986;8(1):79-94.
+
+[321] Stijlemans B, et al. "Immune evasion strategies of Trypanosoma brucei within the mammalian host: progression to pathogenicity." *Front Immunol.* 2016;7:233. PMC4919330.
+
+[322] Cortés A, et al. "Antibody trapping: a novel mechanism of parasite immune evasion by the trematode Echinostoma caproni." *PLoS Negl Trop Dis.* 2017;11(7):e0005773. PMC5531663.
+
+### Immune Failure Mode Analysis
+
+[323] "Understanding Autoimmunity: Mechanisms, Predisposing Factors, and Cytokine Therapies." *Int J Mol Sci.* 2024;25(14):7666. PMC11277571.
+
+[324] "Autoimmune responses are directed against self antigens." In: Janeway CA Jr, et al. *Immunobiology.* 5th ed. NCBI Bookshelf. NBK27155.
+
+[325] "Immune tolerance and the prevention of autoimmune diseases essentially depend on thymic tissue homeostasis." *Front Immunol.* 2024;15:1339714. PMC10987875.
+
+[326] "Autoimmune Diseases: Molecular Pathogenesis and Therapeutic Targets." *MedComm.* 2025;6(7). PMC12171081.
+
+[327] "The cytokine storm in infection and sepsis: win the battle but lose the war." *Mil Med Res.* 2026;13:6. PMC12794442.
+
+[328] "Navigating the Cytokine Storm: A Comprehensive Review of Chemokines and Cytokines in Sepsis." *Cureus.* 2024;16(2):e54275. PMC10944554.
+
+[329] "Cytokines in sepsis: a critical review of the literature on systemic inflammation and multiple organ dysfunction." *Front Immunol.* 2025;16:1682306. PMC12626998.
+
+### Attack Scenario Feasibility Assessment
+
+[330] "Model Context Protocol Specification." Version 2025-11-25. https://modelcontextprotocol.io/specification/2025-11-25 — *"Tools represent arbitrary code execution and must be treated with appropriate caution. [...] MCP itself cannot enforce these security principles at the protocol level."*
+
+[331] "Model Context Protocol." Wikipedia. Accessed April 2026. https://en.wikipedia.org/wiki/Model_Context_Protocol — *April 2025 security analysis confirmed prompt injection, tool permission exploitation, and lookalike tool substitution as outstanding vulnerabilities. June 2025 spec update added OAuth 2.0 and security considerations.*
+
+[332] LangChain Documentation. "Agents." 2026. https://docs.langchain.com/oss/python/langchain/agents — *Middleware can filter tools based on state; "trust the LLM" model where agent can do anything tools allow.*
+
+[333] "Securing LangGraph Multi-Agent Workflows: How to Enforce Tool-Level Permissions." DEV Community, March 2026. — *"LangChain and LangGraph focus heavily on orchestration rather than deterministic security, the framework cheerfully parses the JSON and executes whatever parameters the LLM outputs."*
+
+[334] "Introducing the Agent Governance Toolkit: Open-source runtime security for AI agents." Microsoft Open Source Blog. April 2, 2026. https://opensource.microsoft.com/blog/2026/04/02/introducing-the-agent-governance-toolkit-open-source-runtime-security-for-ai-agents/ — *Maps to OWASP Agentic AI Top 10 (Dec 2025). Introduces circuit breakers, trust decay, DID-based identity, and automated kill switches.*
+
+### Prior Art (Scholar Sweep — April 2026)
+
+[335] Widulinski P. "Artificial Immune Systems in Local and Network Cybersecurity: An Overview of Intrusion Detection Strategies." *Applied Cybersecurity & Internet Governance.* 2023;2(1):1-18.
+
+[336] Darktrace. "Enterprise Immune System." Commercial product. https://darktrace.com — *Uses self-learning AI to model organizational "patterns of life" and flag deviations, operationalizing the immune metaphor for network anomaly detection at enterprise scale.*
+
+[337] Stratosphere Laboratory (Czech Technical University in Prague). "Rethinking the Principles of Immunity For a Cybersecurity Immune System." Draft v1. February 2026. https://www.stratosphereips.org/blog/2026/2/4/rethinking-cybersecurity-immunity — *Identifies 16 principles from biological immunity for cybersecurity. Defense-side only, traditional cybersec scope. Closest concurrent work to this paper. Author list to be confirmed from PDF.*
+
+[338] "Immune-Inspired AI: Adaptive Defense Models for Intelligent Edge Environments (I3AI)." *ICCK Transactions on Emerging Topics in AI.* 2025;2(3):157-168.
+
+[339] Olivares R, Salinas O, et al. "Enhancing the Efficiency of a Cybersecurity Operations Center Using Biomimetic Algorithms Empowered by Deep Q-Learning." *Biomimetics.* 2024;9(6):307. PMC11201477.
+
+[340] Chhabra A, et al. "Agentic AI Security: Threats, Defenses, Evaluation, and Open Challenges." arXiv:2510.23883. October 2025.
+
+[341] "The Attack and Defense Landscape of Agentic AI: A Comprehensive Survey." arXiv:2603.11088. March 2026. — *Notes that prior "design-oriented work proposes high-level principles without systematizing attacks or defenses."*
+
+[342] OWASP Foundation. "Top 10 for Agentic Applications (2026)." Published December 2025. — *First formal industry taxonomy of agent-specific risks: goal hijacking, tool misuse, identity abuse, memory poisoning, cascading failures, rogue agents.*
