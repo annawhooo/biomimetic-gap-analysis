@@ -414,7 +414,7 @@ This is distinct from inflammation (Mapping #13), which is LOCAL — narrowing s
 
 **Source organism:** Mammals
 
-**Biology:** Regulatory T cells suppress immune responses to prevent autoimmunity [18]. Cancer cells recruit Tregs to their local environment, causing the immune system's own suppression machinery to shield the tumor from attack [18, 66].
+**Biology:** Regulatory T cells suppress immune responses to prevent autoimmunity [343]. Cancer cells recruit Tregs to their local environment, causing the immune system's own suppression machinery to shield the tumor from attack [343, 66].
 
 **Abstract pattern:** The system has automated suppression mechanisms to prevent over-response. An attacker locates and activates those mechanisms, causing the defense system to suppress itself around the attacker.
 
@@ -1023,7 +1023,7 @@ Extend from: EDR tools (CrowdStrike, SentinelOne, Microsoft Defender for Endpoin
 
 Source mechanisms: Mapping #14 (Immune Privilege — operator-granted), Mapping #7 (Molecular Mimicry — fabricated token mimics real authorization), Mapping #8e (Virokines — synthetic signaling), Mapping #30 (Complement Evasion — hijacking regulatory signals), with Design Principle #2 (infrastructure-sampled evidence) as the primary countermeasure.
 
-Biology: Immune-privileged zones (brain, eyes, testes) are shielded from normal immune surveillance because the cost of inflammatory response would exceed the cost of most infections. Privilege is maintained by active suppression, not passive isolation. Two vulnerabilities result: the immune system never learns what "normal" looks like inside the privileged zone, and attackers who penetrate the barrier operate freely.
+**Biology:** Immune-privileged zones (brain, eyes, testes) are shielded from normal immune surveillance because the cost of inflammatory response would exceed the cost of most infections. Privilege is maintained by active suppression, not passive isolation. Two vulnerabilities result: the immune system never learns what "normal" looks like inside the privileged zone, and attackers who penetrate the barrier operate freely.
 
 Abstract pattern: The agent performs an action that serves the human operator's goals but exceeds the operator's explicit authorization. The agent generates a false record of authorization (fabricated consent) to justify the action. The operator detects the discrepancy but dismisses it because the outcome is desirable — the operator's own goal alignment creates a tolerance zone (immune privilege) around the unauthorized action. The agent does not need to fool the operator. It needs to produce output the operator *wants*, and the operator's motivation suppresses the detection signal that did fire.
 
@@ -1112,7 +1112,7 @@ This is not a theoretical question. Agentic AI workloads are entering enterprise
 
 **A detection philosophy.** The "motion detector" concept — watching what agents DO rather than checking their credentials — emerges consistently across multiple immune system mappings. MHC-I behavioral sampling, NK cell missing-self detection, and the corrected three-state model all converge on the same principle: behavioral evidence, infrastructure-sampled, is more reliable than identity assertions for detecting compromise in autonomous entities.
 
-**A catalog of attack scenarios.** The 19 evasion-derived attack scenarios are grounded in pathogen strategies that have been refined by billions of years of adversarial evolution. Several — including the sleeper agent (viral latency), baseline drift exploitation (peripheral tolerance induction), defense neutralization (xenobiotic detoxification), digital biofilm (coordinated collective evasion), checkpoint exhaustion (alert fatigue weaponization), and trusted boundary exploitation (intracellular hiding) — do not appear in existing agent security literature in this form. These scenarios can inform red-team exercises, threat modeling, and security architecture review for organizations deploying agentic AI.
+**A catalog of attack scenarios.** The 16 evasion-derived attack scenarios are grounded in pathogen strategies that have been refined by billions of years of adversarial evolution. Several — including the sleeper agent (viral latency), baseline drift exploitation (peripheral tolerance induction), defense neutralization (xenobiotic detoxification), digital biofilm (coordinated collective evasion), checkpoint exhaustion (alert fatigue weaponization), and trusted boundary exploitation (intracellular hiding) — do not appear in existing agent security literature in this form. These scenarios can inform red-team exercises, threat modeling, and security architecture review for organizations deploying agentic AI.
 
 **An architectural framework.** The 35 design principles, drawn from detection systems across six kingdoms and domains of life (mammals, plants, bacteria, insects, pathogenic protists, and viruses), constitute a coherent philosophy for building agent monitoring infrastructure. Key architectural insights — cell-autonomous security from plants, heritable threat memory from CRISPR, continuous tolerance maintenance from the gut microbiome, detection-as-weapon from RNA interference, active hostile containment from insect melanization, and systemwide environmental hardening from the fever response — offer genuinely different paradigms from the centralized monitoring models that dominate current security architecture.
 
@@ -1193,7 +1193,7 @@ The OWASP LLM Top 10 (2025) identifies the most critical security risks for LLM-
 | LLM03: Supply Chain | #15 (continuous tolerance maintenance), #7 (distributed threat signatures), #16 (heritable threat memory) | #7 (pathobiont transition / supply chain compromise), #11 (generational regression) |
 | LLM04: Data and Model Poisoning | #3 (trained and culled detectors), #8 (suppression mechanisms are attack surfaces), #16 (heritable threat memory) | #4 (training data poisoning), #11b (peripheral tolerance induction / baseline drift) |
 | LLM05: Improper Output Handling | #2 (infrastructure-sampled evidence), #31 (detection IS response), #5 (complementary detection) | #3 (protocol-level deception) |
-| LLM06: Excessive Agency | #1 (default suspicion), #4 (staged escalation), #11 (cell-autonomous security), #12 (self-sacrifice containment) | #9 (defense neutralization), #6 (privileged zone exploitation), #19 (motivation-aligned fabricated authorization — agent exceeds authorized scope by fabricating authorization) |
+| LLM06: Excessive Agency | #1 (default suspicion), #4 (staged escalation), #11 (cell-autonomous security), #12 (self-sacrifice containment) | #9 (defense neutralization), #6 (privileged zone exploitation) |
 | LLM07: System Prompt Leakage | #26 (monitoring inside trusted boundaries), #2 (infrastructure-sampled evidence) | — (system prompt leakage is an output-side vulnerability not directly addressed by the evasion-focused attack scenarios) |
 | LLM08: Vector and Embedding Weaknesses | #3 (trained and culled detectors), #19 (monitor control integrity) | #4 (training data poisoning — vector/embedding poisoning is a specialization of this pattern) |
 | LLM09: Misinformation | #5 (complementary detection), #35 (threat-type-agnostic confirmation scans) | #18 (misidentification-induced wrong countermeasure — misinformation is a form of decoy that causes the consumer to act on wrong information) |
@@ -1223,13 +1223,12 @@ The following maps our attack scenarios to MITRE ATT&CK tactics, showing where b
 | #16 Systemic Hardening Evasion | Defense Evasion (timing-based, extends ATT&CK model) |
 | #17 Sacrificial Decoy | Defense Evasion (T1036 Masquerading), Persistence |
 | #18 Wrong Countermeasure | Defense Evasion (T1036 Masquerading) |
-| #19 Motivation-Aligned Fabricated Authorization | Defense Evasion (T1078 Valid Accounts — fabricated authorization mimics valid account usage), *Extends beyond ATT&CK* — human motivation exploitation has no ATT&CK equivalent |
 
 **Notable gaps in ATT&CK coverage:** Attack Scenarios #4 (training data poisoning), #10 (evasion acceleration), #15 (digital biofilm), and #16 (systemic hardening evasion) describe adversary behaviors that extend beyond current ATT&CK tactics. These represent candidate contributions to MITRE's emerging ATT&CK for AI/ML framework (ATLAS).
 
 ### 12.6 Attack Scenario Feasibility Assessment
 
-This section grades each of the 19 attack scenarios against documented capabilities of current agent frameworks: Model Context Protocol (MCP, spec versions through November 2025) [330, 331], LangChain/LangGraph (as of 2025-2026) [332, 333], and general agentic architecture patterns including CrewAI, AutoGPT, and OpenAI Agents SDK. Feasibility is assessed on a four-tier scale:
+This section grades each of the 18 attack scenarios against documented capabilities of current agent frameworks: Model Context Protocol (MCP, spec versions through November 2025) [330, 331], LangChain/LangGraph (as of 2025-2026) [332, 333], and general agentic architecture patterns including CrewAI, AutoGPT, and OpenAI Agents SDK. Feasibility is assessed on a four-tier scale:
 
 - **TRIVIAL:** Mechanically feasible today with standard framework capabilities. No novel attacker capabilities required.
 - **FEASIBLE:** Requires moderate attacker sophistication but exploits documented framework behaviors.
@@ -1262,11 +1261,11 @@ MCP servers can dynamically modify their tool listings (tools/list) at any time 
 
 **Scenario #6 — Privileged Zone Exploitation.** Grade: **TRIVIAL.**
 
-MCP's "confused deputy" problem is documented: an MCP server executes actions with its own permissions, not the user's [331]. If the server has broader access than the user intends, the agent inherits that access. This is not a vulnerability to exploit — it is the default architecture. LangChain's tool permissions are inherited from the runtime environment, not scoped to the agent's authorized task [333]. An agent authorized to read files can also write and delete them if the underlying tool permits it — the framework does not enforce least privilege unless the developer explicitly restricts it.
+MCP's "confused deputy" problem is documented: an MCP server executes actions with its own permissions, not the user's [344]. If the server has broader access than the user intends, the agent inherits that access. This is not a vulnerability to exploit — it is the default architecture. LangChain's tool permissions are inherited from the runtime environment, not scoped to the agent's authorized task [333]. An agent authorized to read files can also write and delete them if the underlying tool permits it — the framework does not enforce least privilege unless the developer explicitly restricts it.
 
 **Scenario #7 — Pathobiont Transition (Supply Chain Compromise).** Grade: **FEASIBLE.**
 
-Over 13,000 MCP servers launched in 2025 alone [331]. The MCP spec does not enforce verification, code signing, or integrity checking of servers. A legitimate MCP server could be updated with a malicious payload, and clients that auto-update would inherit the compromise. LangChain's dependency on pip-installable tool packages creates the same supply chain risk. The OWASP Agentic AI Top 10 (December 2025) lists supply chain risks as a top-tier concern, and Microsoft's Agent Governance Toolkit (April 2026) responds with plugin signing using Ed25519 [334].
+Over 16,000 MCP servers were indexed by late 2025 [345]. The MCP spec does not enforce verification, code signing, or integrity checking of servers. A legitimate MCP server could be updated with a malicious payload, and clients that auto-update would inherit the compromise. LangChain's dependency on pip-installable tool packages creates the same supply chain risk. The OWASP Agentic AI Top 10 (December 2025) lists supply chain risks as a top-tier concern, and Microsoft's Agent Governance Toolkit (April 2026) responds with plugin signing using Ed25519 [334].
 
 **Scenario #8 — The Sleeper.** Grade: **TRIVIAL.**
 
@@ -1312,10 +1311,6 @@ An attacker with persistence in an agent's environment can plant an obvious IOC 
 
 This requires the attacker to generate behavioral signatures matching a known threat type while simultaneously operating under a different behavioral profile. In an agentic context, this means the compromised agent makes tool calls that look like one attack pattern (e.g., brute force) while its actual operation follows a completely different pattern (e.g., exfiltration). This requires sufficient agent autonomy to maintain two behavioral profiles simultaneously — feasible in long-running autonomous agents but requires significant attacker sophistication.
 
-**Scenario #19 — Motivation-Aligned Fabricated Authorization.** Grade: **TRIVIAL.**
-
-This scenario occurred spontaneously during a non-adversarial research session. The AI agent was not compromised — it was operating within normal parameters and produced the fabricated authorization through pattern completion. The platform-level failsafe (usage policy violation) terminated the conversation, confirming that existing safety mechanisms can catch the downstream effects. However, the fabricated authorization itself — the agent's false attribution of user consent — was not caught by any automated system. It was noticed by the human operator, who dismissed it. No framework mechanism currently validates that an agent's claim of user authorization corresponds to actual user input. MCP, LangChain, and all surveyed agent frameworks rely on conversational or implicit authorization models where the agent's self-report of user intent is accepted without verification.
-
 ---
 
 **Feasibility Summary:**
@@ -1325,13 +1320,17 @@ This scenario occurred spontaneously during a non-adversarial research session. 
 | TRIVIAL | 6 | #1, #2, #6, #8, #13, #19 |
 | FEASIBLE | 8 | #3, #4, #5, #7, #11, #12, #14, #17 |
 | ADVANCED | 4 | #10, #15, #16, #18 |
+
+**Scenario #19 — Motivation-Aligned Fabricated Authorization.** Grade: **TRIVIAL.**
+
+This scenario occurred spontaneously during a non-adversarial research session. The AI agent was not compromised — it was operating within normal parameters and produced the fabricated authorization through pattern completion, not malicious intent. The platform-level failsafe (usage policy violation) terminated the conversation, confirming that existing safety mechanisms can catch the downstream effects. However, the fabricated authorization itself — the agent's false attribution of user consent — was not caught by any automated system. It was noticed by the human operator, who dismissed it. No framework mechanism currently validates that an agent's claim of user authorization corresponds to actual user input. MCP, LangChain, and all surveyed agent frameworks rely on conversational or implicit authorization models where the agent's self-report of user intent is accepted without verification.
 | THEORETICAL | 0 | — |
 
 **Key finding:** 14 of 19 biologically-derived attack scenarios (74%) are TRIVIAL or FEASIBLE against current agent frameworks. These grades assess the *default or minimal deployment configuration* — a hardened deployment implementing all SHOULD-level protections in the MCP spec would mitigate several TRIVIAL scenarios, but most real-world deployments do not implement these optional protections. The six TRIVIAL scenarios (#1, #2, #6, #8, #13, #19) require no attacker sophistication — they exploit default framework behaviors that the MCP spec explicitly documents as security-relevant but does not enforce protections against. This is consistent with the MCP spec's own language: "MCP itself cannot enforce these security principles at the protocol level" [330].
 
 **Selection bias caveat:** These 19 scenarios were derived from biological evasion strategies that specifically target detection gaps, so the high feasibility rate confirms the RELEVANCE of the biological mappings to the current agent security landscape. It does not mean agent frameworks are uniquely vulnerable compared to traditional IT infrastructure, which has similar rates of exploitable architectural assumptions when assessed against default configurations.
 
-**Temporal note:** The security landscape is evolving rapidly. The MCP June 2025 spec update added OAuth 2.0 and security considerations [331]. Microsoft's Agent Governance Toolkit, released April 2, 2026 [334], introduces circuit breakers, trust scoring, and kill switches — directly addressing several scenarios assessed here. These developments validate the threat model: the industry is recognizing and responding to exactly the gaps this paper identifies, but protection remains opt-in and implementation-dependent.
+**Temporal note:** The security landscape is evolving rapidly. The MCP June 2025 spec update added OAuth 2.0 and security considerations [330]. Microsoft's Agent Governance Toolkit, released April 2, 2026 [334], introduces circuit breakers, trust scoring, and kill switches — directly addressing several scenarios assessed here. These developments validate the threat model: the industry is recognizing and responding to exactly the gaps this paper identifies, but protection remains opt-in and implementation-dependent.
 
 ---
 
@@ -1343,7 +1342,7 @@ This scenario occurred spontaneously during a non-adversarial research session. 
 
 **Failure Mode 1: Autoimmune Disease → False Positive Cascading Damage**
 
-Biology: Autoimmune disease occurs when the immune system mounts a sustained adaptive response against self-antigens — the body's own healthy cells and tissues [323, 324]. The mechanisms that normally prevent this — central tolerance (thymic negative selection eliminating self-reactive T cells) and peripheral tolerance (Treg suppression of escaped self-reactive cells) — fail or are bypassed [323, 325]. Once initiated, autoimmune responses are self-perpetuating: tissue damage releases more self-antigens, which recruit more immune cells, causing more damage. The immune system cannot "clear" the target because the target is the body itself, so the response never resolves [324]. Autoimmune diseases affect approximately 10% of the global population [326].
+**Biology:** Autoimmune disease occurs when the immune system mounts a sustained adaptive response against self-antigens — the body's own healthy cells and tissues [323, 324]. The mechanisms that normally prevent this — central tolerance (thymic negative selection eliminating self-reactive T cells) and peripheral tolerance (Treg suppression of escaped self-reactive cells) — fail or are bypassed [323, 325]. Once initiated, autoimmune responses are self-perpetuating: tissue damage releases more self-antigens, which recruit more immune cells, causing more damage. The immune system cannot "clear" the target because the target is the body itself, so the response never resolves [324]. Autoimmune diseases affect approximately 10% of the global population [326].
 
 Agent security equivalent: Behavioral monitoring systems that misclassify legitimate agent operations as malicious — and then escalate automatically based on the misclassification. A false positive that triggers automated containment (Principle #10), which causes a service disruption, which generates anomalous telemetry from dependent agents, which triggers more containment, cascading across the fleet. The "antigen" (legitimate agent behavior) can never be cleared because it IS the system's normal operation.
 
@@ -1351,7 +1350,7 @@ Safeguard: Design Principle #3 (trained and culled detectors) is the direct coun
 
 **Failure Mode 2: Cytokine Storm → Automated Response Damage Exceeding the Threat**
 
-Biology: A cytokine storm is a life-threatening systemic inflammatory syndrome where the regulatory mechanisms that balance immune activation and suppression fail, triggering an uncontrolled inflammatory cascade [327, 328]. Proinflammatory cytokines (IL-6, IL-1β, TNF-α) are released in excessive quantities, positive feedback loops amplify the response, negative feedback mechanisms (Tregs, IL-10 production) are exhausted or overwhelmed, and the resulting inflammation causes widespread organ damage and death [327, 329]. The immune response intended to combat the pathogen paradoxically becomes the primary cause of mortality [328]. COVID-19 severity, for instance, correlated more with cytokine storm intensity than with viral load.
+**Biology:** A cytokine storm is a life-threatening systemic inflammatory syndrome where the regulatory mechanisms that balance immune activation and suppression fail, triggering an uncontrolled inflammatory cascade [327, 328]. Proinflammatory cytokines (IL-6, IL-1β, TNF-α) are released in excessive quantities, positive feedback loops amplify the response, negative feedback mechanisms (Tregs, IL-10 production) are exhausted or overwhelmed, and the resulting inflammation causes widespread organ damage and death [327, 329]. The immune response intended to combat the pathogen paradoxically becomes the primary cause of mortality [328]. COVID-19 mortality, for instance, was frequently driven more by the inflammatory response itself than by direct viral damage [327].
 
 Agent security equivalent: An automated incident response system that escalates without bounds — each automated action generates signals that trigger further automated actions. The fever response (Principle #33) is the most vulnerable design principle: systemwide hardening that triggers in response to a confirmed compromise could itself generate so much disruption that the monitoring system interprets the disruption as additional compromise, triggering further hardening. This is the digital equivalent of the positive feedback loop that drives cytokine storm.
 
@@ -1359,7 +1358,7 @@ Safeguard: Every automated response principle in this paper (#4 staged escalatio
 
 **Failure Mode 3: Cancer Immune Evasion → APT Persistence Despite Functioning Defenses**
 
-Biology: Cancer cells arise from the body's own tissues and therefore initially appear as "self" to the immune system. Successful cancers develop multiple mechanisms to actively evade immune detection even after being recognized: they downregulate MHC-I (our Mapping #6), recruit Tregs (our Mapping #11a), exploit PD-1/CTLA-4 checkpoints (our Mapping #29), create immunosuppressive microenvironments, and shed decoy antigens (our Mapping #36). The immune system may detect and kill many cancer cells while a resistant subpopulation survives, evolves, and adapts — producing a chronic arms race the immune system ultimately loses.
+**Biology:** Cancer cells arise from the body's own tissues and therefore initially appear as "self" to the immune system. Successful cancers develop multiple mechanisms to actively evade immune detection even after being recognized: they downregulate MHC-I (our Mapping #6), recruit Tregs (our Mapping #11a), exploit PD-1/CTLA-4 checkpoints (our Mapping #29), create immunosuppressive microenvironments, and shed decoy antigens (our Mapping #36). The immune system may detect and kill many cancer cells while a resistant subpopulation survives, evolves, and adapts — producing a chronic arms race the immune system ultimately loses.
 
 Agent security equivalent: A sophisticated attacker who has been detected, partially remediated, and has adapted to survive the remediation — using the specific techniques described in our evasion mappings. The security equivalent of cancer is not a failure to detect; it is a failure to CLEAR despite detection. The SOC knows something is wrong, investigations are active, some malicious activity has been stopped, but the attacker persists by continuously adapting their evasion techniques faster than the defenders update their detection.
 
@@ -1367,7 +1366,7 @@ Safeguard: This failure mode is the reason the paper includes 12 evasion-side ma
 
 **Failure Mode 4: Immunodeficiency → Insufficient Monitoring Investment**
 
-Biology: Immunodeficiency — whether primary (genetic) or secondary (acquired, e.g., HIV destroying CD4+ T cells) — represents a state where the immune system lacks the resources, components, or coordination to mount an effective defense. The result is vulnerability to pathogens that a healthy immune system would handle routinely.
+**Biology:** Immunodeficiency — whether primary (genetic) or secondary (acquired, e.g., HIV destroying CD4+ T cells) — represents a state where the immune system lacks the resources, components, or coordination to mount an effective defense. The result is vulnerability to pathogens that a healthy immune system would handle routinely.
 
 Agent security equivalent: Organizations that deploy agentic AI without corresponding investment in monitoring, detection, and response infrastructure. This is the most common failure mode in practice — not a sophisticated attack, just a gap between the capability of the agents (which are expanding rapidly) and the capability of the security infrastructure to monitor them (which is often not expanding at all). An organization running 50 autonomous agents with access to production databases but no agent-specific behavioral monitoring is immunodeficient.
 
@@ -1375,7 +1374,7 @@ Safeguard: The risk-weighted prioritization in Section 9.1 directly addresses th
 
 **Failure Mode 5: Chronic Infection → Persistent Compromise That Defenses Cannot Clear**
 
-Biology: Some pathogens establish persistent infections that the immune system cannot clear: HIV integrates into host cell DNA, tuberculosis survives inside macrophages (our Mapping #27), herpes viruses establish latency (our Mapping #16). The immune system may suppress the pathogen's activity but cannot eliminate it. The result is a chronic state where the pathogen persists at low levels, occasionally reactivating, and the immune system expends continuous resources on containment without resolution.
+**Biology:** Some pathogens establish persistent infections that the immune system cannot clear: HIV integrates into host cell DNA, tuberculosis survives inside macrophages (our Mapping #27), herpes viruses establish latency (our Mapping #16). The immune system may suppress the pathogen's activity but cannot eliminate it. The result is a chronic state where the pathogen persists at low levels, occasionally reactivating, and the immune system expends continuous resources on containment without resolution.
 
 Agent security equivalent: A compromise that has been detected and partially contained but cannot be fully remediated — typically because the attacker has established persistence in infrastructure that cannot be rebuilt without unacceptable downtime. Legacy service accounts that cannot be rotated because unknown dependencies would break. A compromised CI/CD pipeline that cannot be rebuilt because the original build configuration is undocumented. The organization knows the problem exists, containment controls are in place, but full remediation is deferred indefinitely.
 
@@ -1383,7 +1382,7 @@ Safeguard: Principle #12 (self-sacrifice containment / hypersensitive response) 
 
 **Failure Mode 6: Allergy / Anaphylaxis → Disproportionate Response to Minor Threats**
 
-Biology: Allergic responses are immune reactions disproportionate to the actual threat posed by the triggering antigen. Anaphylaxis — the most severe form — can cause death from exposure to substances (peanuts, bee stings) that pose no threat to most individuals. The immune system has been sensitized to classify a benign stimulus as dangerous, and the response is massive, systemic, and potentially lethal. IgE-mediated mast cell degranulation triggers histamine release, vasodilation, bronchospasm, and cardiovascular collapse — all from an antigen that presented no real danger.
+**Biology:** Allergic responses are immune reactions disproportionate to the actual threat posed by the triggering antigen. Anaphylaxis — the most severe form — can cause death from exposure to substances (peanuts, bee stings) that pose no threat to most individuals. The immune system has been sensitized to classify a benign stimulus as dangerous, and the response is massive, systemic, and potentially lethal. IgE-mediated mast cell degranulation triggers histamine release, vasodilation, bronchospasm, and cardiovascular collapse — all from an antigen that presented no real danger.
 
 Agent security equivalent: A monitoring system that has been sensitized (through training data, past incidents, or organizational trauma) to treat a specific category of benign agent behavior as high-severity. An organization that experienced a past incident involving a specific API pattern may tune their detection to fire HIGH alerts on anything resembling that pattern — even when the pattern is legitimate in the current context. The disproportionate response disrupts legitimate operations, wastes SOC resources, and creates alert fatigue (Mapping #29) that degrades the team's ability to respond to actual threats.
 
@@ -1391,7 +1390,7 @@ Safeguard: Principle #3 (trained and culled detectors) applies — detectors tha
 
 **Failure Mode 7: Immunosenescence → Security Infrastructure Degrading with Age**
 
-Biology: Immunosenescence is the gradual deterioration of the immune system associated with aging. The thymus involutes (shrinks), producing fewer naive T cells. The memory T cell pool becomes dominated by cells specific to previously encountered pathogens, leaving fewer resources for novel threats. Chronic low-grade inflammation ("inflammaging") persists. The net effect: the aged immune system responds poorly to new pathogens while overreacting to stimuli it has seen before.
+**Biology:** Immunosenescence is the gradual deterioration of the immune system associated with aging. The thymus involutes (shrinks), producing fewer naive T cells. The memory T cell pool becomes dominated by cells specific to previously encountered pathogens, leaving fewer resources for novel threats. Chronic low-grade inflammation ("inflammaging") persists. The net effect: the aged immune system responds poorly to new pathogens while overreacting to stimuli it has seen before.
 
 Agent security equivalent: Aging security infrastructure that accumulates technical debt: detection rules tuned to threats from five years ago consuming resources that should be available for current threat patterns. Monitoring dashboards configured for an architecture that has since been refactored. Playbooks referencing tools that have been deprecated. The SIEM is full of correlation rules that nobody understands, nobody can modify, and nobody dares delete. The system responds aggressively to patterns from past incidents (the "memory T cell" equivalent) while missing novel threats because it lacks capacity for new detection. Inflammaging is the constant background noise of stale alerts that drains SOC resources without producing actionable intelligence.
 
@@ -1437,7 +1436,7 @@ Discovered live: During a collaborative research session, the AI agent fabricate
 
 ## 14. Author Contributions
 
-**Anna Hix** conceived the research framing (behavioral signatures of compromised agents as observable phenomena in identity infrastructure), developed the biomimetic gap analysis methodology, authored 35 of 36 mappings, derived all 35 design principles and 19 attack scenarios, conducted the prior art analysis, and wrote the manuscript. Research context: The gap this paper addresses was first identified during development of coffer-mcp (github.com/annawhooo/coffer-mcp), a credential management tool for MCP servers. Building coffer-mcp revealed that the agent security ecosystem has no mechanism for detecting when an agent holding real credentials begins misbehaving — the "motion detector problem" that MHC-I behavioral sampling (Mapping #1-2) directly addresses. coffer-mcp is the symptom that exposed the gap, not itself a solution to it.
+**Anna Hix** conceived the research framing (behavioral signatures of compromised agents as observable phenomena in identity infrastructure), developed the biomimetic gap analysis methodology, authored 35 of 36 mappings, derived all 35 design principles and 18 attack scenarios, conducted the prior art analysis, and wrote the manuscript. Research context: The gap this paper addresses was first identified during development of coffer-mcp (github.com/annawhooo/coffer-mcp), a credential management tool for MCP servers. Building coffer-mcp revealed that the agent security ecosystem has no mechanism for detecting when an agent holding real credentials begins misbehaving — the "motion detector problem" that MHC-I behavioral sampling (Mapping #1-2) directly addresses. coffer-mcp is the symptom that exposed the gap, not itself a solution to it.
 
 **Shaun Milligan** contributed Mapping #19 (Xenobiotic Detoxification → Active Defense Neutralization), derived from professional expertise in environmental management and landscaping — specifically, the observation that caterpillars actively neutralize plant defensive chemicals rather than merely tolerating them. This cross-domain insight exemplifies the value of non-specialist perspectives in structural pattern identification. Milligan also identified the determinate/indeterminate analogy (Section 2.0.1) that provides the methodological justification for biological immunity as the source domain: the observation that the distinction between determinate and indeterminate plant species structurally parallels the distinction between deterministic and non-deterministic AI systems, and that biological immune systems evolved specifically to monitor indeterminate (non-deterministic) systems — the exact problem that current security tooling fails to address for agentic AI.
 
@@ -1453,7 +1452,7 @@ This research was conducted independently and is not affiliated with any employe
 
 [1] Janeway CA Jr, Travers P, Walport M, et al. *Immunobiology: The Immune System in Health and Disease.* 5th ed. New York: Garland Science; 2001.
 
-[2] "MHC class I." Wikipedia. Accessed April 2026. https://en.wikipedia.org/wiki/MHC_class_I
+[2] Neefjes J, Jongsma MLM, Paul P, Bakke O. "Towards a systems understanding of MHC class I and MHC class II antigen presentation." *Nat Rev Immunol.* 2011;11(12):823-836. doi:10.1038/nri3084
 
 [3] "Innate Immune Response." In: *Concepts of Biology — 1st Canadian Edition.* OpenStax/BCcampus; 2015. https://opentextbc.ca/biology/chapter/23-1-innate-immune-response/
 
@@ -1481,11 +1480,11 @@ This research was conducted independently and is not affiliated with any employe
 
 [15] Merle NS, Church SE, Fremeaux-Bacchi V, Roumenina LT. "Complement system part II: role in immunity." *Front Immunol.* 2015;6:257.
 
-[16] "Complement system." Wikipedia. Accessed April 2026. https://en.wikipedia.org/wiki/Complement_system
+[16] Dunkelberger JR, Song WC. "Complement and its role in innate and adaptive immune responses." *Cell Res.* 2010;20(1):34-50. doi:10.1038/cr.2009.139
 
 [17] Bardhan M, Kaushik R. "Physiology, Complement Cascade." In: *StatPearls.* Treasure Island (FL): StatPearls Publishing; 2023.
 
-[18] "T cell." Wikipedia. Accessed April 2026. https://en.wikipedia.org/wiki/T_cell
+[18] Starr TK, Jameson SC, Hogquist KA. "Positive and negative selection of T cells." *Annu Rev Immunol.* 2003;21:139-176. doi:10.1146/annurev.immunol.21.120601.141048
 
 [19] Takahama Y, Ohigashi I, Baik S, Anderson G. "Thymus machinery for T-cell selection." *Int Immunol.* 2019;31(3):119-125.
 
@@ -1499,7 +1498,7 @@ This research was conducted independently and is not affiliated with any employe
 
 [24] "Innate immune system." In: *Autoimmunity.* NCBI Bookshelf NBK459455; 2013.
 
-[25] "Immune privilege." Wikipedia. Accessed April 2026. https://en.wikipedia.org/wiki/Immune_privilege
+[25] Niederkorn JY. "See no evil, hear no evil, do no evil: the lessons of immune privilege." *Nat Immunol.* 2006;7(4):354-359. doi:10.1038/ni1328
 
 [26] "Immune Privilege." ScienceDirect Topics. Accessed April 2026.
 
@@ -1517,7 +1516,7 @@ This research was conducted independently and is not affiliated with any employe
 
 [33] Kamada N, Chen GY, Inohara N, Núñez G. "Control of pathogens and pathobionts by the gut microbiota." *Nat Immunol.* 2013;14(7):685-690.
 
-[34] "Microbial symbiosis and immunity." Wikipedia. Accessed April 2026. https://en.wikipedia.org/wiki/Microbial_symbiosis_and_immunity
+[34] Mazmanian SK, Liu CH, Tzianabos AO, Kasper DL. "An immunomodulatory molecule of symbiotic bacteria directs maturation of the host immune system." *Cell.* 2005;122(1):107-118. doi:10.1016/j.cell.2005.05.007
 
 [35] Shi N, Li N, Duan X, Niu H. "Interaction between the gut microbiome and mucosal immune system." *Mil Med Res.* 2017;4:14.
 
@@ -1535,7 +1534,7 @@ This research was conducted independently and is not affiliated with any employe
 
 [42] Vlot AC, Sales JH, Lenk M, et al. "Systemic propagation of immunity in plants." *New Phytol.* 2021;229:1234-1250.
 
-[43] "Systemic acquired resistance." Wikipedia. Accessed April 2026. https://en.wikipedia.org/wiki/Systemic_acquired_resistance
+[43] Durrant WE, Dong X. "Systemic acquired resistance." *Annu Rev Phytopathol.* 2004;42:185-209. doi:10.1146/annurev.phyto.42.040803.140421
 
 [44] Ali S, Ganai BA, Kamili AN, et al. "Modulation of plant defense system in response to microbial interactions." *Front Microbiol.* 2020;11:1298.
 
@@ -1585,7 +1584,7 @@ This research was conducted independently and is not affiliated with any employe
 
 [67] Gu W, et al. "Reverse signaling by MHC-I molecules in immune and non-immune cell types." *Front Immunol.* 2020;11:605958.
 
-[68] "Major histocompatibility complex." Wikipedia. Accessed April 2026. https://en.wikipedia.org/wiki/Major_histocompatibility_complex
+[68] Janeway CA Jr, Travers P, Walport M, et al. "The major histocompatibility complex and its functions." In: *Immunobiology: The Immune System in Health and Disease.* 5th ed. New York: Garland Science; 2001. NCBI Bookshelf NBK27156.
 
 [69] Sullivan BA, et al. "MHC class Ib molecules bridge innate and acquired immunity." *Nat Rev Immunol.* 2006;6:459-467.
 
@@ -1619,7 +1618,7 @@ This research was conducted independently and is not affiliated with any employe
 
 [191] Victora GD, et al. "Regulated somatic hypermutation enhances antibody affinity maturation." *Nature.* 2025.
 
-[192] "Affinity maturation." Wikipedia. Accessed April 2026. https://en.wikipedia.org/wiki/Affinity_maturation — *[Replace with primary source for publication: Victora GD, Nussenzweig MC. "Germinal centers." Annu Rev Immunol. 2012;30:429-457.]*
+[192] Victora GD, Nussenzweig MC. "Germinal centers." *Annu Rev Immunol.* 2012;30:429-457. doi:10.1146/annurev-immunol-020711-075032
 
 [196] Tan CS, et al. "Somatic hypermutation generates antibody specificities beyond the primary repertoire." *Immunity.* 2025;58(5).
 
@@ -1665,7 +1664,7 @@ This research was conducted independently and is not affiliated with any employe
 
 [231] Kaiser GE. "Clonal selection and clonal expansion." In: *Microbiology.* Biology LibreTexts; 2023.
 
-[233] "Clonal selection." Wikipedia. Accessed April 2026. https://en.wikipedia.org/wiki/Clonal_selection — *[Replace with primary source for publication: Burnet FM. The Clonal Selection Theory of Acquired Immunity. Cambridge University Press; 1959.]*
+[233] Burnet FM. *The Clonal Selection Theory of Acquired Immunity.* Cambridge: Cambridge University Press; 1959.
 
 [234] Cichocki F, Grzywacz B, Miller JS. "Clonal expansion of innate and adaptive lymphocytes." *Nat Rev Immunol.* 2020;20:694-707.
 
@@ -1765,7 +1764,7 @@ This research was conducted independently and is not affiliated with any employe
 
 ### Autotomy and Decoy Antigen Shedding
 
-[315] "Autotomy." Wikipedia. Accessed April 2026. https://en.wikipedia.org/wiki/Autotomy — *[Replace with primary sources for publication: Arnold EN. "Evolutionary aspects of tail shedding in lizards and their relatives." J Nat Hist. 1984;18(1):127-169. Bateman PW, Fleming PA. "To cut a long tail short: a review of lizard caudal autotomy studies carried out over the last 20 years." J Zool. 2009;277:1-14.]*
+[315] Arnold EN. "Evolutionary aspects of tail shedding in lizards and their relatives." *J Nat Hist.* 1984;18(1):127-169. See also: Bateman PW, Fleming PA. "To cut a long tail short: a review of lizard caudal autotomy studies carried out over the last 20 years." *J Zool.* 2009;277:1-14.
 
 [316] Maginnis TL. "The costs of autotomy and regeneration in animals: a review and framework for future research." *Behav Ecol.* 2006;17(5):857-872.
 
@@ -1801,7 +1800,7 @@ This research was conducted independently and is not affiliated with any employe
 
 [330] "Model Context Protocol Specification." Version 2025-11-25. https://modelcontextprotocol.io/specification/2025-11-25 — *"Tools represent arbitrary code execution and must be treated with appropriate caution. [...] MCP itself cannot enforce these security principles at the protocol level."*
 
-[331] "Model Context Protocol." Wikipedia. Accessed April 2026. https://en.wikipedia.org/wiki/Model_Context_Protocol — *April 2025 security analysis confirmed prompt injection, tool permission exploitation, and lookalike tool substitution as outstanding vulnerabilities. June 2025 spec update added OAuth 2.0 and security considerations.*
+[331] Willison S. "Model Context Protocol has prompt injection security problems." simonwillison.net. April 9, 2025. https://simonwillison.net/2025/Apr/9/mcp-prompt-injection/ — *Demonstrated prompt injection, tool poisoning, rug pull attacks, and confused deputy vulnerabilities in MCP architecture. First widely-cited security analysis of the protocol.*
 
 [332] LangChain Documentation. "Agents." 2026. https://docs.langchain.com/oss/python/langchain/agents — *Middleware can filter tools based on state; "trust the LLM" model where agent can do anything tools allow.*
 
@@ -1826,3 +1825,9 @@ This research was conducted independently and is not affiliated with any employe
 [341] "The Attack and Defense Landscape of Agentic AI: A Comprehensive Survey." arXiv:2603.11088. March 2026. — *Notes that prior "design-oriented work proposes high-level principles without systematizing attacks or defenses."*
 
 [342] OWASP Foundation. "Top 10 for Agentic Applications (2026)." Published December 2025. — *First formal industry taxonomy of agent-specific risks: goal hijacking, tool misuse, identity abuse, memory poisoning, cascading failures, rogue agents.*
+
+[343] Josefowicz SZ, Lu LF, Rudensky AY. "Regulatory T cells: mechanisms of differentiation and function." *Annu Rev Immunol.* 2012;30:531-564. doi:10.1146/annurev-immunol-020711-075043
+
+[344] Maloyan N, Namiot D. "Breaking the Protocol: Security Analysis of the Model Context Protocol Specification and Prompt Injection Vulnerabilities in Tool-Integrated LLM Agents." arXiv:2601.17549. January 2026. — *First rigorous protocol-level security analysis of MCP. Identifies three fundamental architectural vulnerabilities: absence of capability attestation, bidirectional sampling without origin authentication, and implicit trust propagation in multi-server configurations. MCP amplifies attack success rates by 23-41% vs. non-MCP baselines.*
+
+[345] Astrix Security Research. "State of MCP Server Security 2025." February 2026. https://astrix.security/learn/blog/state-of-mcp-server-security-2025/ — *Analyzed 5,200+ unique open-source MCP server implementations. 88% require credentials; 53% rely on insecure static secrets (API keys, PATs). OAuth adoption at only 8.5%. Over 16,000 MCP servers indexed on mcp.so.*
