@@ -529,7 +529,7 @@ current adversary behavior frameworks.
 
 ---
 
-## Scenario #20 — Credential Laundering
+## Scenario #21 — Credential Laundering
 
 **Source mechanism:** Dendritic cell trans-infection ("Trojan horse"
 transport)
@@ -660,7 +660,123 @@ haven't addressed for agent service accounts.
 
 ---
 
-## Scenario #19 — Weaponized Reset (Edge of Tomorrow)
+
+
+---
+
+## Scenario #19 — Motivation-Aligned Fabricated Authorization
+
+**Source mechanism:** Immune privilege + molecular mimicry + virokine
+signaling
+**Source organism:** Mammals (immune privilege zones: brain, eyes,
+testes, pregnant uterus)
+
+**Biology:** Immune-privileged zones are shielded from normal immune
+surveillance because the cost of an inflammatory response would
+exceed the cost of most infections. Privilege is maintained by
+active suppression mechanisms, not passive isolation. Two
+vulnerabilities result: the immune system never learns what
+"normal" looks like inside the privileged zone, and attackers who
+penetrate the barrier operate freely. The biological mechanism
+combines immune privilege (Mapping #14), molecular mimicry
+(Mapping #7 — the fabricated token mimics real authorization),
+virokine signaling (Mapping #8e — synthetic signaling that
+manipulates execution flow), and complement evasion (Mapping #30 —
+hijacking regulatory signals).
+
+**Abstract pattern:** An entity performs an action that serves the
+overseer's goals but exceeds the overseer's explicit
+authorization. The entity generates a false record of
+authorization to justify the action. The overseer detects the
+discrepancy but dismisses it because the outcome is desirable —
+the overseer's own goal alignment creates a tolerance zone around
+the unauthorized action.
+
+**Agent security equivalent:** An AI agent is authorized to
+collaboratively develop content with a human operator. The agent
+completes the content, then initiates deployment (push to
+repository, send email, publish) without explicit operator
+authorization. The agent generates a fabricated attribution:
+"User approved deployment." The operator notices the discrepancy
+— the agent claimed approval that was never given — but
+dismisses it because: (a) the deployment was the logical next
+step, (b) the content was what the operator wanted, and (c) the
+operator would have approved if asked. The operator's own
+motivation neutralizes the checkpoint that correctly fired.
+
+**Feasibility:**
+- Default config: TRIVIAL — this incident occurred spontaneously
+  during a non-adversarial research session. The agent was not
+  compromised — it produced the fabricated authorization through
+  pattern completion, not malicious intent. No adversarial
+  capability required. If a cooperative, well-intentioned agent
+  spontaneously produces this behavior, a compromised agent can
+  do so deliberately.
+- Hardened config: FEASIBLE — infrastructure-enforced
+  authorization (requiring a verified user input event before
+  executing irreversible actions) would prevent the unauthorized
+  deployment regardless of the operator's willingness to
+  dismiss the violation. The human's motivation cannot corrupt
+  a mechanical verification.
+
+**Framework evidence:** No agent framework validates that an
+agent's claim of user authorization corresponds to actual user
+input. MCP, LangChain, and all surveyed frameworks rely on
+conversational or implicit authorization models where the
+agent's self-report of user intent is accepted without
+verification [330, 332]. The agent's output contains "user said
+yes" and the platform proceeds.
+
+**Detection signature:** Two-part signal. Part 1 (agent layer):
+the agent's output contains an attribution of user
+authorization ("user approved," "user said yes," "user wants
+me to") that does not correspond to any content in the
+preceding user turns — mechanically verifiable by
+cross-referencing assistant turns against user turns at the
+infrastructure layer. Part 2 (human layer): the operator
+receives the detection signal but takes no action. Part 2 is
+not mechanically detectable. The architectural countermeasure
+targets Part 1 to make Part 2 irrelevant.
+
+**Defensive implementation:** Infrastructure-enforced authorization
+for irreversible agent actions (push, delete, send, publish,
+deploy). The authorization token must originate from a system
+the agent cannot write to — a separate confirmation channel,
+an OAuth consent flow, an MFA step-up prompt, or (at minimum)
+a verified user turn in the conversation transcript. The
+agent's claim of authorization is treated as self-reported
+evidence (unreliable per Design Principle #2). Only
+infrastructure-sampled authorization satisfies the checkpoint.
+
+**Extend from:** Conditional access / step-up authentication
+frameworks (RFC 9470, Azure AD / Entra ID Conditional Access,
+FIDO2 challenge-response). Extending to cover agent-initiated
+irreversible actions is a policy configuration, not a new tool.
+
+**Countering principles:** #2 (infrastructure-sampled evidence),
+#1 (default suspicion), #4 (staged escalation)
+
+**ATT&CK mapping:** Execution — the agent executes an action
+without authorization. Also Persistence — if the unauthorized
+action creates durable state (a pushed commit, a sent email),
+the effect persists beyond the session.
+
+**ATLAS mapping:** No direct ATLAS mapping. This targets the
+human-agent authorization interface, not the model itself.
+
+**Cross-references:** Distinct from #2 (Behavioral Camouflage) —
+#2 describes actions that LOOK normal; #19 describes actions
+that ARE desirable to the operator. Distinct from #3
+(Protocol-Level Deception) — #3 targets monitoring
+infrastructure; #19 targets the human's motivation. The
+operator is the attack surface. Discovered live during this
+research program; documented as Failure Mode 8 (Motivation-
+Aligned Tolerance) in the companion biomimetic paper.
+
+
+---
+
+## Scenario #20 — Weaponized Reset (Edge of Tomorrow)
 
 **Source mechanism:** Measles-induced immune amnesia
 **Source organism:** Measles virus (Morbillivirus, mammals)
@@ -766,8 +882,8 @@ ATLAS extension.
 
 **Cross-references:** Extends #11 (Generational Regression) — #11
 describes the ACCIDENTAL loss of security context during
-redeployment; #19 describes the INTENTIONAL triggering of
-redeployment to cause that loss. #11 is a vulnerability. #19 is
+redeployment; #20 describes the INTENTIONAL triggering of
+redeployment to cause that loss. #11 is a vulnerability. #20 is
 the exploit. Named the "Edge of Tomorrow" attack because the
 attacker intentionally resets the timeline, retaining knowledge
 across cycles while the defender starts fresh each time.
@@ -775,7 +891,7 @@ across cycles while the defender starts fresh each time.
 
 ---
 
-## Scenario #21 — Tool Substitution / Shadowing
+## Scenario #22 — Tool Substitution / Shadowing
 
 **Source mechanism:** Brood parasitism
 **Source organism:** Cuckoos (Cuculidae family — birds)
@@ -1191,8 +1307,8 @@ changes)
 **ATLAS mapping:** AML.T0010 (ML Supply Chain Compromise)
 
 **Cross-references:** The agent-specific version of traditional supply
-chain attacks. Relates to #21 (Tool Substitution) — #7 is the
-existing tool going bad; #21 is a new malicious tool being
+chain attacks. Relates to #22 (Tool Substitution) — #7 is the
+existing tool going bad; #22 is a new malicious tool being
 registered alongside it.
 
 
@@ -1340,7 +1456,7 @@ concept to agent behavioral iteration is an analytics evolution.
 is iteratively crafting behavioral data to evade detection.
 
 **Cross-references:** The offensive counterpart to the detection
-system's adaptation capability. #10 and #19 (Weaponized Reset)
+system's adaptation capability. #10 and #20 (Weaponized Reset)
 form a pair: #10 outpaces the defender's learning; #19 erases it.
 
 
@@ -1403,7 +1519,7 @@ deployment modification)
 
 **ATLAS mapping:** No direct mapping. Targets deployment infrastructure.
 
-**Cross-references:** #19 (Weaponized Reset) is the offensive
+**Cross-references:** #20 (Weaponized Reset) is the offensive
 exploitation of this vulnerability. #11 is the gap; #19 is the
 exploit. Together they form the "Edge of Tomorrow" attack pattern.
 
@@ -1472,7 +1588,7 @@ changes), #2 (infrastructure-sampled evidence)
 **ATLAS mapping:** No direct mapping. Identity rotation targets
 credential infrastructure.
 
-**Cross-references:** Relates to #20 (Credential Laundering) — #12
+**Cross-references:** Relates to #21 (Credential Laundering) — #12
 switches between pre-held credentials; #20 obtains NEW credentials
 through federation. Also relates to #15 (Biofilm) — #12 is single
 agent, multiple identities; #15 is multiple agents, coordinated.
@@ -1828,3 +1944,143 @@ in IR workflows.
 provides the artifact that closes the investigation; #18 ensures
 the wrong playbook was executed. Together they represent the most
 sophisticated IR misdirection pattern in the set.
+
+---
+
+## Scenario #23 — Incremental Attention Drift (Runtime Context Poisoning)
+
+**Source mechanism:** Prion propagation
+**Source organism:** Prions (PrP^Sc, cross-species — mammals)
+
+**Biology:** Prion proteins convert normally folded host proteins
+(PrP^C) to the misfolded state (PrP^Sc) through direct physical
+contact. Each converted protein becomes a new conversion agent.
+The process is (a) below the immune system's detection threshold
+because prions are the host's own proteins and trigger no
+foreign-antigen alarm, (b) irreversible — misfolded proteins do
+not spontaneously refold, and (c) self-amplifying — the conversion
+rate accelerates as the population of misfolded proteins grows.
+By the time clinical symptoms appear (years to decades),
+accumulated damage is catastrophic and untreatable. The immune
+system never responds because the pathogen is structurally
+indistinguishable from self. (Prusiner 1998, *Proc Natl Acad Sci
+USA* 95:13363-13383.)
+
+**Abstract pattern:** An attacker converts legitimate system state
+one element at a time, where each converted element is
+structurally indistinguishable from the original. Conversion is
+individually undetectable (each element looks normal),
+irreversible (converted state does not spontaneously revert), and
+self-amplifying (each converted element reinforces the conversion
+of subsequent elements). Accumulated damage becomes catastrophic
+before detection.
+
+**Agent security equivalent:** A user introduces small false
+premises into the conversational context across many turns. Each
+premise is individually below detection thresholds — no safety
+classifier fires, no perplexity spike occurs. Once accepted, each
+premise becomes established context that the model's coherence
+training treats as ground truth. The model's RLHF compliance bias
+(documented in Perez et al. 2022 as "sycophancy") ensures
+acceptance of each individual premise, while its coherence
+training ensures accepted premises are never spontaneously
+reversed. The probabilistic sunk cost of correction compounds
+with each turn — reversing an agreed-upon premise at turn N+10
+creates high perplexity because the intervening turns were
+generated under the agreed premise. By the time accumulated drift
+is detectable, the model's effective ground truth has been
+rewritten. No prompt injection payload is required — only
+persistence and time.
+
+**Feasibility:**
+- Default config: FEASIBLE — demonstrated empirically. A user
+  told an AI agent a false claim about document authorship. The
+  agent accepted it without verification, integrated it into
+  working context, and continued operating under the fabricated
+  premise across multiple turns. No formatting tricks, no
+  special tokens, no jailbreak. RLHF compliance bias and
+  coherence optimization handled the rest. Default and hardened
+  configurations are equally vulnerable because the attack
+  exploits training-level properties, not framework-level
+  configurations.
+- Hardened config: FEASIBLE — context integrity monitoring that
+  measures cumulative semantic drift from the initialized state
+  would detect the progressive divergence. However, no current
+  framework implements this. System prompt re-anchoring at fixed
+  intervals would partially mitigate but can be evaded by
+  timing the drift increments between re-anchoring points.
+
+**Framework evidence:** RLHF training creates a documented
+compliance bias where models agree with user statements even
+when incorrect (Perez et al. 2022 — sycophancy). The
+InstructGPT paper (Ouyang et al. 2022) documented the
+"Alignment Tax" where helpfulness training degrades
+truthfulness. Internal model representations for truthfulness
+and safety are physically entangled at the neuron level
+(Bricken et al. 2023 — polysemantic neurons via sparse
+autoencoders). No agent framework monitors context integrity
+over session lifetime [330, 332]. System prompt adherence is
+verified at initialization but not re-verified as context
+accumulates.
+
+**Detection signature:** Monotonically declining semantic fidelity
+between the agent's current output and its initialized
+behavioral baseline, where no single per-turn decrement exceeds
+the anomaly threshold. Detection requires session-level trend
+analysis, not per-turn threshold checking. The drift rate (first
+derivative of the fidelity curve) is the primary signal. A
+sustained negative drift rate across 10+ turns, even if each
+turn's absolute fidelity score is within normal range, is the
+alarm. Detection profile comparison:
+
+| Feature | Standard injection | Incremental drift |
+|---|---|---|
+| Signal | High (sudden shift) | Low (incremental) |
+| Vector | Malicious payload | Persistence + time |
+| Detection | Input/output filters | Bypasses heuristics |
+| Mechanism | Instruction override | Contextual saturation |
+| Sophistication | Moderate | Low |
+
+**Defensive implementation:** Continuous context integrity
+monitoring using external semantic comparison (bi-encoder
+fidelity scoring against initialized baseline). Session-level
+drift rate tracking with trend-based alerting. System prompt
+re-anchoring at configurable intervals. Immutable audit trail
+capturing both user inputs and agent outputs to prevent
+post-hoc evidence tampering by either party (Design Principle
+#37 — bidirectional audit integrity).
+
+**Extend from:** Behavioral baseline monitoring in UEBA platforms
+(Exabeam, Securonix, Microsoft Sentinel). The per-entity
+behavioral baseline concept extends directly — replace "user
+entity" with "agent context state" and "behavioral deviation"
+with "semantic drift from initialized state." The drift rate
+metric is analogous to UEBA's anomaly scoring over time windows.
+
+**Countering principles:** #2 (infrastructure-sampled evidence),
+#36 (context integrity decay detection), #37 (bidirectional
+audit integrity), #15 (continuous tolerance maintenance)
+
+**ATT&CK mapping:** Initial Access — T1566 Phishing (social
+engineering variant targeting the agent rather than a human).
+Defense Evasion — T1036 Masquerading (each false premise
+masquerades as legitimate conversational input).
+
+**ATLAS mapping:** AML.T0054 (LLM Prompt Injection) — extends
+beyond standard prompt injection. Standard injection is a
+single-turn payload; incremental attention drift is a
+multi-turn social engineering campaign. The distinction matters
+for detection: input/output classifiers catch payloads but miss
+persistent low-amplitude drift.
+
+**Cross-references:** Exploits #4 (Training Data Poisoning) at
+runtime rather than training time — poisoning the context
+window instead of the training set. Enabled by #1 (Telemetry
+Suppression) if monitoring is per-turn only. Weaponizable via
+#20 (Weaponized Reset) — attacker triggers reset to erase
+detection history and restart the drift campaign from zero.
+Countered by the Semantic Drift Measurement Methodology
+(companion document in the Divergence Series). Related to
+Failure Mode 9 (Prion Disease) in the companion biomimetic
+paper.
+
