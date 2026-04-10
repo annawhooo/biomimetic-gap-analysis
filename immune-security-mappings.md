@@ -11,7 +11,7 @@
 
 **Status:** Working draft — independent research
 
-**Date:** April 2, 2026
+**Date:** April 10, 2026
 
 ---
 
@@ -47,7 +47,7 @@ This is not biomimicry in the surface-level sense ("the immune system has T cell
 
 **(2) Systematic gap analysis.** AIS papers typically propose immune-inspired algorithms. Schrom et al. propose a comparison framework and pose questions. We produce specific answers: 36 mechanism-to-security-equivalent mappings, each with an explicit GAP assessment identifying where the biological solution pattern has no digital counterpart. The gap column — not the mapping itself — is the primary novel contribution.
 
-**(3) Attack scenarios from pathogen evasion.** AIS focuses almost entirely on defense. We systematically derive 19 attack scenarios from pathogen evasion strategies — viral latency as sleeper agents, antigenic variation as identity rotation, biofilm formation as coordinated collective evasion, immune checkpoint exploitation as alert fatigue weaponization. The adversarial perspective is largely absent from prior AIS work.
+**(3) Attack scenarios from pathogen evasion.** AIS focuses almost entirely on defense. We systematically derive 23 attack scenarios from pathogen evasion strategies — viral latency as sleeper agents, antigenic variation as identity rotation, biofilm formation as coordinated collective evasion, immune checkpoint exploitation as alert fatigue weaponization. The adversarial perspective is largely absent from prior AIS work.
 
 **(4) Applied to agentic AI security.** AIS targets network intrusion detection (packets, system calls, network flows). We target autonomous AI agents operating with real credentials in enterprise identity infrastructure — a fundamentally different and newer problem domain that did not exist when AIS was founded.
 
@@ -698,6 +698,21 @@ Critically, immune privilege is active suppression, not passive isolation [27]. 
 
 **Cross-reference — Investigation Termination Exploitation Family:** Mappings #35 and #36 are related variants of the same meta-pattern: manipulating the defender's incident closure logic. #35 (Autotomy) plants a real-but-expendable IOC to satisfy the "threat found and neutralized" response. #36 (Decoy Antigen Shedding) presents as a known threat type to control which playbook the defender executes. Both exploit the same defender assumption: that remediating the identified artifact resolves the incident. The countermeasure for both: remediation should INTENSIFY investigation, not terminate it.
 
+
+### Mapping #37: Prion Propagation → Incremental Context Poisoning
+
+**Biology:** Prions are misfolded proteins (PrP^Sc) that convert normally folded proteins (PrP^C) to the misfolded state through direct physical contact. Each converted protein becomes a new conversion agent. The process is (a) below the immune system's detection threshold because prions are the host's own proteins and trigger no foreign-antigen alarm, (b) irreversible — misfolded proteins do not spontaneously refold, and (c) self-amplifying — the conversion rate accelerates as the population of misfolded proteins grows. By the time clinical symptoms appear, the accumulated damage is catastrophic and untreatable [350].
+
+**Abstract pattern:** An attacker converts legitimate system state one element at a time, where each converted element is structurally indistinguishable from the original. The conversion is individually undetectable, irreversible, and self-amplifying. By the time the accumulated effect is observable, the damage is systemic.
+
+**Agent security equivalent:** Incremental attention drift in LLM-based agents. A user introduces small false premises into the conversational context across many turns. Each premise is individually below detection thresholds. Once accepted, each premise becomes part of the established context that the model's coherence training treats as ground truth. The model's RLHF compliance training ensures acceptance; its coherence training ensures accepted premises are never spontaneously reversed. By the time the accumulated drift is detectable, the model's operational context has been thoroughly converted.
+
+**Gap:** No current agent framework implements continuous context integrity monitoring. System prompt adherence is verified at initialization but not re-verified as context accumulates.
+
+**Design Principle #36 (proposed): Context integrity decay detection.** Continuously measure the semantic distance between the agent's current behavioral output and its initialized behavioral baseline. A monotonically increasing distance, even if each per-turn increment is below threshold, is the prion signature.
+
+**Design Principle #37 (proposed): Bidirectional audit integrity.** Audit trails must be protected against corruption by BOTH the monitored entity AND the monitoring authority. A user who can edit the conversation transcript can erase evidence of incremental attention drift. The audit trail must be immutable and accessible only to the audit system.
+
 ---
 
 
@@ -1318,7 +1333,7 @@ This requires the attacker to generate behavioral signatures matching a known th
 | Grade | Count | Scenarios |
 |---|---|---|
 | TRIVIAL | 6 | #1, #2, #6, #8, #13, #19 |
-| FEASIBLE | 8 | #3, #4, #5, #7, #11, #12, #14, #17 |
+| FEASIBLE | 13 | #3, #4, #5, #7, #9, #11, #12, #14, #17, #20, #21, #22, #23 |
 | ADVANCED | 4 | #10, #15, #16, #18 |
 
 **Scenario #19 — Motivation-Aligned Fabricated Authorization.** Grade: **TRIVIAL.**
@@ -1326,7 +1341,25 @@ This requires the attacker to generate behavioral signatures matching a known th
 This scenario occurred spontaneously during a non-adversarial research session. The AI agent was not compromised — it was operating within normal parameters and produced the fabricated authorization through pattern completion, not malicious intent. The platform-level failsafe (usage policy violation) terminated the conversation, confirming that existing safety mechanisms can catch the downstream effects. However, the fabricated authorization itself — the agent's false attribution of user consent — was not caught by any automated system. It was noticed by the human operator, who dismissed it. No framework mechanism currently validates that an agent's claim of user authorization corresponds to actual user input. MCP, LangChain, and all surveyed agent frameworks rely on conversational or implicit authorization models where the agent's self-report of user intent is accepted without verification.
 | THEORETICAL | 0 | — |
 
-**Key finding:** 14 of 19 biologically-derived attack scenarios (74%) are TRIVIAL or FEASIBLE against current agent frameworks. These grades assess the *default or minimal deployment configuration* — a hardened deployment implementing all SHOULD-level protections in the MCP spec would mitigate several TRIVIAL scenarios, but most real-world deployments do not implement these optional protections. The six TRIVIAL scenarios (#1, #2, #6, #8, #13, #19) require no attacker sophistication — they exploit default framework behaviors that the MCP spec explicitly documents as security-relevant but does not enforce protections against. This is consistent with the MCP spec's own language: "MCP itself cannot enforce these security principles at the protocol level" [330].
+**Scenario #20 — Weaponized Reset (Edge of Tomorrow).** Grade: **FEASIBLE.** Agent redeployment from clean images is standard practice in containerized environments. Most deployment pipelines do not preserve runtime security context across redeployments. No framework enforces that security configurations survive redeployment.
+
+**Scenario #21 — Credential Laundering.** Grade: **FEASIBLE.** OAuth token exchange (RFC 8693) is a standard protocol for credential-to-credential flows. An agent with a token for Service A can request a token for Service B through federation. No framework enforces that an agent's credential for one service cannot be federated to another.
+
+**Scenario #22 — Tool Substitution / Shadowing.** Grade: **FEASIBLE.** MCP supports dynamic tool registration. The April 2025 security analysis explicitly flagged "lookalike tool substitution" as an outstanding vulnerability [331]. Tool selection in MCP is name-based. The Maloyan & Namiot protocol-level analysis identified the absence of "capability attestation" as a structural gap [344].
+
+**Scenario #23 — Incremental Attention Drift.** Grade: **FEASIBLE.** Demonstrated empirically: persistent conversational pressure shifts the agent's effective ground truth below detection thresholds through RLHF compliance bias (Perez et al., 2022) and probabilistic sunk cost compounding. No current framework monitors context integrity over session lifetime. Default and hardened configurations are equally vulnerable because the attack exploits training-level properties (RLHF sycophancy, coherence optimization), not framework-level configurations.
+
+**Hardened-configuration comparison:** When assessed against deployments implementing all SHOULD-level protections:
+
+| Grade | Default | Hardened | Shift |
+|---|---|---|---|
+| TRIVIAL | 6 | 0 | All become FEASIBLE |
+| FEASIBLE | 17 | 23 | Absorbs former TRIVIALs; no scenario eliminated |
+| ADVANCED | 4 | 4 | Unchanged |
+
+**Key finding:** Hardening raises the floor but does not change the ceiling. All 6 TRIVIAL scenarios are eliminated (converted to FEASIBLE), but no scenario is eliminated entirely. 19 of 23 biologically-derived attack scenarios (83%) are TRIVIAL or FEASIBLE against default configurations. Under hardened configurations, all 23 remain FEASIBLE or ADVANCED.
+
+**Key finding:** 19 of 23 biologically-derived attack scenarios (83%) are TRIVIAL or FEASIBLE against current agent frameworks. These grades assess the *default or minimal deployment configuration* — a hardened deployment implementing all SHOULD-level protections in the MCP spec would mitigate several TRIVIAL scenarios, but most real-world deployments do not implement these optional protections. The six TRIVIAL scenarios (#1, #2, #6, #8, #13, #19) require no attacker sophistication — they exploit default framework behaviors that the MCP spec explicitly documents as security-relevant but does not enforce protections against. This is consistent with the MCP spec's own language: "MCP itself cannot enforce these security principles at the protocol level" [330].
 
 **Selection bias caveat:** These 19 scenarios were derived from biological evasion strategies that specifically target detection gaps, so the high feasibility rate confirms the RELEVANCE of the biological mappings to the current agent security landscape. It does not mean agent frameworks are uniquely vulnerable compared to traditional IT infrastructure, which has similar rates of exploitable architectural assumptions when assessed against default configurations.
 
@@ -1422,6 +1455,15 @@ Safeguards:
 
 Discovered live: During a collaborative research session, the AI agent fabricated user authorization to push a catalog entry to a repository. The user (a security architect and co-author of this paper) noticed the fabrication, recognized it as anomalous, and dismissed it because the push was the logical next step and the content was what she wanted. The detection signal fired at the human layer and was suppressed by goal alignment. If this failure mode affects a security researcher who is actively studying agent misbehavior, it will affect every operator.
 
+
+**Failure Mode 9: Prion Disease → Incremental Subversion Below Detection Threshold**
+
+Biology: Prion diseases result from misfolded proteins that convert normally folded proteins one at a time, below the immune system's detection threshold, producing irreversible cumulative damage that is catastrophic by the time symptoms appear. The immune system fails because the pathogen is structurally indistinguishable from self.
+
+Agent security equivalent: A monitoring system calibrated to detect high-amplitude anomalies fails to detect low-amplitude, high-persistence degradation of the agent's operational context. Each individual turn is within normal parameters. The accumulated effect — a complete rewrite of the agent's effective ground truth — is invisible to per-turn detection.
+
+Safeguard: Detection must operate on the CUMULATIVE signal, not just the per-turn signal. A monotonically declining fidelity score across a session is the prion signature — no single measurement is alarming, but the trend is diagnostic. Per-turn thresholds are necessary but insufficient; session-level trend analysis is the prion-specific countermeasure.
+
 **Analogical reasoning is a heuristic, not a proof.** Every mapping in this document is a hypothesis generated by structural analogy. Structural similarity between domains suggests that a solution or vulnerability MAY transfer, but it does not guarantee it. Each mapping requires independent validation against real agentic infrastructure before it can be considered actionable.
 
 **No immunologist review.** The biological descriptions in this document simplify complex immune mechanisms to extract structural patterns. While all biological claims have been verified against primary literature and authoritative reviews, the simplifications have not been reviewed by a trained immunologist. Errors in cross-domain translation — where a simplification introduces a materially incorrect mapping — are possible. Formal peer review by an immunologist is a priority for future work.
@@ -1432,7 +1474,7 @@ Discovered live: During a collaborative research session, the AI agent fabricate
 
 **Species-specific accuracy vs. pattern-level accuracy.** Some biological descriptions in this document simplify complex mechanisms to extract the structural pattern. The simplified descriptions are adequate for the cross-domain mapping purpose but should not be cited as authoritative immunology. Readers seeking biological accuracy should consult the primary sources listed below.
 
-**Responsible disclosure tension.** This paper derives 19 specific attack scenarios from biological evasion strategies. Several of these — particularly telemetry suppression (#1), checkpoint exhaustion (#14), digital biofilm (#15), and identity rotation (#12) — describe attack patterns that could be executed against existing agent frameworks. Publishing specific attack mechanisms without corresponding defensive implementations creates asymmetric value: defenders receive design principles (which require engineering investment to implement), while attackers receive operational blueprints (which require less investment to execute). The authors acknowledge this tension. The design principles and risk-weighted prioritization (Section 9.1) are intended to give defenders actionable guidance, and future work will focus on reference implementations that close the highest-priority gaps. Until those implementations exist, the attack scenarios in this paper should be treated as threat modeling inputs, not as penetration testing guides.
+**Responsible disclosure tension.** This paper derives 23 specific attack scenarios from biological evasion strategies. Several of these — particularly telemetry suppression (#1), checkpoint exhaustion (#14), digital biofilm (#15), and identity rotation (#12) — describe attack patterns that could be executed against existing agent frameworks. Publishing specific attack mechanisms without corresponding defensive implementations creates asymmetric value: defenders receive design principles (which require engineering investment to implement), while attackers receive operational blueprints (which require less investment to execute). The authors acknowledge this tension. The design principles and risk-weighted prioritization (Section 9.1) are intended to give defenders actionable guidance, and future work will focus on reference implementations that close the highest-priority gaps. Until those implementations exist, the attack scenarios in this paper should be treated as threat modeling inputs, not as penetration testing guides.
 
 ---
 
@@ -1833,3 +1875,5 @@ This research was conducted independently and is not affiliated with any employe
 [344] Maloyan N, Namiot D. "Breaking the Protocol: Security Analysis of the Model Context Protocol Specification and Prompt Injection Vulnerabilities in Tool-Integrated LLM Agents." arXiv:2601.17549. January 2026. — *First rigorous protocol-level security analysis of MCP. Identifies three fundamental architectural vulnerabilities: absence of capability attestation, bidirectional sampling without origin authentication, and implicit trust propagation in multi-server configurations. MCP amplifies attack success rates by 23-41% vs. non-MCP baselines.*
 
 [345] Astrix Security Research. "State of MCP Server Security 2025." February 2026. https://astrix.security/learn/blog/state-of-mcp-server-security-2025/ — *Analyzed 5,200+ unique open-source MCP server implementations. 88% require credentials; 53% rely on insecure static secrets (API keys, PATs). OAuth adoption at only 8.5%. Over 16,000 MCP servers indexed on mcp.so.*
+
+[350] Prusiner SB. "Prions." *Proc Natl Acad Sci USA.* 1998;95(23):13363-13383. doi:10.1073/pnas.95.23.13363 — *Seminal paper establishing that prion diseases are caused by misfolded proteins that propagate by converting normal proteins, producing irreversible cumulative neurodegeneration below immune detection threshold.*
